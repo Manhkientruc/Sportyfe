@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.sportyfe"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.sportyfe"
@@ -43,6 +43,13 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(platform("androidx.compose:compose-bom:1.4.0"))
+    implementation("androidx.compose.animation:animation:1.8.0-alpha05")
+    implementation("androidx.compose.ui:ui:1.5.0")
+    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation ("androidx.navigation:navigation-compose:2.8.4")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.5.1")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

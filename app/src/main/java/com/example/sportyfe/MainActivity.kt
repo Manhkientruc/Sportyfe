@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.em
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -66,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "AndroidCompact5") {
+    NavHost(navController = navController, startDestination = "AndroidCompact1") {
         composable("AndroidCompact1") { AndroidCompact1(navController) }
         composable("AndroidCompact2") { AndroidCompact2(navController) }
         composable("AndroidCompact3") { AndroidCompact3(navController) }
@@ -100,13 +99,7 @@ fun AndroidCompact1(navController: NavHostController, modifier: Modifier = Modif
                 .requiredHeight(height = 168.dp))
     }
 }
-@Preview(widthDp = 412, heightDp = 917)
-@Composable
-private fun AndroidCompact1Preview() {
-    AndroidCompact1(
-        navController = rememberNavController(), // Fake NavController để chạy Preview
-        modifier = Modifier)
-}
+
 @Composable
 fun AndroidCompact2(navController: NavHostController, modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
@@ -153,13 +146,6 @@ fun AndroidCompact2(navController: NavHostController, modifier: Modifier = Modif
     }
 }
 
-@Preview(widthDp = 412, heightDp = 917)
-@Composable
-private fun AndroidCompact2Preview() {
-    AndroidCompact2(
-        navController = rememberNavController(), // Fake NavController để chạy Preview
-        modifier = Modifier)
-}
 @Composable
 fun AndroidCompact3(navController: NavHostController, modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
@@ -190,13 +176,6 @@ fun AndroidCompact3(navController: NavHostController, modifier: Modifier = Modif
     }
 }
 
-@Preview(widthDp = 412, heightDp = 917)
-@Composable
-private fun AndroidCompact3Preview() {
-    AndroidCompact3(
-        navController = rememberNavController(), // Fake NavController để chạy Preview
-        modifier = Modifier)
-}
 @Composable
 fun AndroidCompact4(navController: NavHostController, modifier: Modifier = Modifier) {
     var isChecked by remember { mutableStateOf(false) }
@@ -428,14 +407,6 @@ fun AndroidCompact4(navController: NavHostController, modifier: Modifier = Modif
                 .requiredHeight(height = 105.dp))
     }
 }
-
-@Preview(widthDp = 412, heightDp = 917)
-@Composable
-private fun AndroidCompact4Preview() {
-    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
-    AndroidCompact4(navController = previewNavController, Modifier)
-}
-
 
 @Composable
 fun AndroidCompact5(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -736,12 +707,6 @@ fun AndroidCompact5(navController: NavHostController, modifier: Modifier = Modif
     }
 }
 
-@Preview(widthDp = 412, heightDp = 917)
-@Composable
-private fun AndroidCompact5Preview() {
-    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
-    AndroidCompact5(navController = previewNavController, Modifier)
-}
 @Composable
 fun AndroidCompact9(navController: NavHostController, modifier: Modifier = Modifier) {
     Box(
@@ -835,12 +800,6 @@ fun AndroidCompact9(navController: NavHostController, modifier: Modifier = Modif
     }
 }
 
-@Preview(widthDp = 412, heightDp = 917)
-@Composable
-private fun AndroidCompact9Preview() {
-    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
-    AndroidCompact9(navController = previewNavController, Modifier)
-}
 @Composable
 fun AndroidCompact10(navController: NavHostController, modifier: Modifier = Modifier) {
     Box(
@@ -960,6 +919,51 @@ fun AndroidCompact10(navController: NavHostController, modifier: Modifier = Modi
                 .offset(x = (0).dp,
                     y = 110.dp))
     }
+}
+
+@Preview(widthDp = 412, heightDp = 917)
+@Composable
+private fun AndroidCompact1Preview() {
+    AndroidCompact1(
+        navController = rememberNavController(), // Fake NavController để chạy Preview
+        modifier = Modifier)
+}
+
+@Preview(widthDp = 412, heightDp = 917)
+@Composable
+private fun AndroidCompact2Preview() {
+    AndroidCompact2(
+        navController = rememberNavController(), // Fake NavController để chạy Preview
+        modifier = Modifier)
+}
+
+@Preview(widthDp = 412, heightDp = 917)
+@Composable
+private fun AndroidCompact3Preview() {
+    AndroidCompact3(
+        navController = rememberNavController(), // Fake NavController để chạy Preview
+        modifier = Modifier)
+}
+
+@Preview(widthDp = 412, heightDp = 917)
+@Composable
+private fun AndroidCompact4Preview() {
+    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
+    AndroidCompact4(navController = previewNavController, Modifier)
+}
+
+@Preview(widthDp = 412, heightDp = 917)
+@Composable
+private fun AndroidCompact5Preview() {
+    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
+    AndroidCompact5(navController = previewNavController, Modifier)
+}
+
+@Preview(widthDp = 412, heightDp = 917)
+@Composable
+private fun AndroidCompact9Preview() {
+    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
+    AndroidCompact9(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 917)

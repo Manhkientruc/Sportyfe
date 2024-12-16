@@ -43,6 +43,9 @@ import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.delay
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.material3.Divider
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
@@ -65,7 +68,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "AndroidCompact1") {
+    NavHost(navController = navController, startDestination = "AndroidCompact32") {
         composable("AndroidCompact1") { AndroidCompact1(navController) }
         composable("AndroidCompact2") { AndroidCompact2(navController) }
         composable("AndroidCompact3") { AndroidCompact3(navController) }
@@ -73,6 +76,8 @@ fun AppNavigation(navController: NavHostController) {
         composable("AndroidCompact5") { AndroidCompact5(navController) }
         composable("AndroidCompact9") { AndroidCompact9(navController) }
         composable("AndroidCompact10") { AndroidCompact10(navController) }
+        composable("AndroidCompact11") { AndroidCompact11(navController) }
+        composable("AndroidCompact32") { AndroidCompact32(navController) }
     }
 }
 @Composable
@@ -920,6 +925,284 @@ fun AndroidCompact10(navController: NavHostController, modifier: Modifier = Modi
                     y = 110.dp))
     }
 }
+@Composable
+fun AndroidCompact11(navController: NavHostController, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .requiredWidth(width = 412.dp)
+            .requiredHeight(height = 917.dp)
+            .clip(shape = RoundedCornerShape(50.dp))
+            .background(color = Color.White)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.img_45),
+            contentDescription = "45",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .align(alignment = Alignment.Center)
+                .offset(x = (-95).dp,
+                    y = (-350).dp)
+                .requiredWidth(width = 134.dp)
+                .requiredHeight(height = 31.dp))
+        Image(
+            painter = painterResource(id = R.drawable.search),
+            contentDescription = "Interface essential/Magnifier",
+            modifier = Modifier
+                .align(alignment = Alignment.Center)
+                .offset(x = 120.dp,
+                    y = (-350).dp)
+                .requiredSize(size = 25.dp))
+        Box(
+            modifier = Modifier
+                .align(alignment = Alignment.Center)
+                .offset(x = 160.dp,
+                    y = (-350).dp)
+                .requiredSize(size = 28.dp)
+                .clip(shape = RoundedCornerShape(5.dp))
+                .background(color = Color.White)
+                .border(border = BorderStroke(1.dp, Color.Black),
+                    shape = RoundedCornerShape(5.dp)))
+        Image(
+            painter = painterResource(id = R.drawable.qr),
+            contentDescription = "Frame",
+            colorFilter = ColorFilter.tint(Color.Black),
+            modifier = Modifier
+                .align(alignment = Alignment.Center)
+                .offset(x = 160.dp,
+                    y = (-350).dp)
+                .requiredWidth(width = 19.dp)
+                .requiredHeight(height = 22.dp))
+        Box(
+            modifier = Modifier
+                    .align(alignment = Alignment.Center)
+                .offset(x = 186.dp,
+                    y = 822.dp)
+                .requiredSize(size = 35.dp)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.magnifier),
+            contentDescription = "Interface essential/Magnifier",
+            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 120.dp,
+                    y = 780.dp)
+                .requiredSize(size = 25.dp))
+        Image(
+            painter = painterResource(id = R.drawable.heart),
+            contentDescription = "Icon",
+            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 192.dp,
+                    y = 780.dp)
+                .requiredSize(size = 25.dp))
+        Image(
+            painter = painterResource(id = R.drawable.shoppingbag),
+            contentDescription = "Comercial/Shopping-bag",
+            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 268.dp,
+                    y = 780.dp)
+                .requiredSize(size = 25.dp))
+        Image(
+            painter = painterResource(id = R.drawable.person),
+            contentDescription = "User/Person",
+            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 338.dp,
+                    y = 780.dp)
+                .requiredSize(size = 25.dp))
+        Image(
+            painter = painterResource(id = R.drawable.home),
+            contentDescription = "Icon",
+            colorFilter = ColorFilter.tint(Color(0xff000000)),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 48.dp,
+                    y = 780.dp)
+                .requiredSize(size = 25.dp))
+        Text(
+            text = "Đang tải sản phẩm...",
+            color = Color.Black,
+            lineHeight = 10.29.em,
+            style = TextStyle(
+                fontSize = 14.sp),
+            modifier = Modifier
+                .align(alignment = Alignment.Center)
+                .offset(x = 0.5.dp,
+                    y = (-60.5).dp))
+        Image(
+            painter = painterResource(id = R.drawable.line2),
+            contentDescription = "Line 2",
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 122.dp,
+                    y = 413.dp)
+                .requiredWidth(width = 31.dp)
+                .border(border = BorderStroke(2.dp, Color.Black)))
+        Divider(
+            color = Color.Black.copy(alpha = 0.15f),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 0.dp,
+                    y = 765.dp)
+                .requiredWidth(width = 412.dp)
+                .graphicsLayer(rotationZ = 0.14f))
+        Divider(
+            color = Color.Black.copy(alpha = 0.15f),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 0.dp,
+                    y = 135.dp)
+                .requiredWidth(width = 412.dp)
+                .graphicsLayer(rotationZ = 0.14f))
+    }
+}
+@Composable
+fun AndroidCompact32(navController: NavHostController, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .requiredWidth(width = 412.dp)
+            .requiredHeight(height = 917.dp)
+            .clip(shape = RoundedCornerShape(50.dp))
+            .background(color = Color.White)
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.img_45),
+            contentDescription = "45",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .align(alignment = Alignment.Center)
+                .offset(x = (-95).dp,
+                    y = (-350).dp)
+                .requiredWidth(width = 134.dp)
+                .requiredHeight(height = 31.dp))
+        Image(
+            painter = painterResource(id = R.drawable.search),
+            contentDescription = "Interface essential/Magnifier",
+            modifier = Modifier
+                .align(alignment = Alignment.Center)
+                .offset(x = 120.dp,
+                    y = (-350).dp)
+                .requiredSize(size = 25.dp))
+        Box(
+            modifier = Modifier
+                .align(alignment = Alignment.Center)
+                .offset(x = 160.dp,
+                    y = (-350).dp)
+                .requiredSize(size = 28.dp)
+                .clip(shape = RoundedCornerShape(5.dp))
+                .background(color = Color.White)
+                .border(border = BorderStroke(1.dp, Color.Black),
+                    shape = RoundedCornerShape(5.dp)))
+        Image(
+            painter = painterResource(id = R.drawable.qr),
+            contentDescription = "Frame",
+            colorFilter = ColorFilter.tint(Color.Black),
+            modifier = Modifier
+                .align(alignment = Alignment.Center)
+                .offset(x = 160.dp,
+                    y = (-350).dp)
+                .requiredWidth(width = 19.dp)
+                .requiredHeight(height = 22.dp))
+        Image(
+            painter = painterResource(id = R.drawable.image1),
+            contentDescription = "image 1",
+            modifier = modifier
+                .align(alignment = Alignment.Center)
+                .offset(x = 0.dp,
+                    y = (-220).dp)
+                .requiredWidth(width = 330.dp)
+                .requiredHeight(height = 180.dp)
+                .clip(shape = RoundedCornerShape(21.dp)))
+        Box(
+            modifier = modifier
+                .requiredWidth(width = 50.dp)
+                .requiredHeight(height = 17.dp)
+                .align(alignment = Alignment.Center)
+                .offset(x = -100.dp,
+                    y = (-150).dp)
+                .background(color = Color.White)
+                .border(border = BorderStroke(2.dp, Color.Black))
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.vector),
+                contentDescription = "Vector",
+                modifier = modifier
+                    .align(alignment = Alignment.Center)
+                    .offset(x = 15.dp,
+                        y = (0).dp)
+                    .requiredWidth(width = 15.dp)
+                    .requiredHeight(height = 8.dp)
+                    .graphicsLayer(rotationZ = -90f)
+            )
+        }
+        Image(
+            painter = painterResource(id = R.drawable.magnifier),
+            contentDescription = "Interface essential/Magnifier",
+            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 120.dp,
+                    y = 780.dp)
+                .requiredSize(size = 25.dp))
+        Image(
+            painter = painterResource(id = R.drawable.heart),
+            contentDescription = "Icon",
+            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 192.dp,
+                    y = 780.dp)
+                .requiredSize(size = 25.dp))
+        Image(
+            painter = painterResource(id = R.drawable.shoppingbag),
+            contentDescription = "Comercial/Shopping-bag",
+            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 268.dp,
+                    y = 780.dp)
+                .requiredSize(size = 25.dp))
+        Image(
+            painter = painterResource(id = R.drawable.person),
+            contentDescription = "User/Person",
+            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 338.dp,
+                    y = 780.dp)
+                .requiredSize(size = 25.dp))
+        Image(
+            painter = painterResource(id = R.drawable.home),
+            contentDescription = "Icon",
+            colorFilter = ColorFilter.tint(Color(0xff000000)),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 48.dp,
+                    y = 780.dp)
+                .requiredSize(size = 25.dp))
+        Divider(
+            color = Color.Black.copy(alpha = 0.15f),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 0.dp,
+                    y = 765.dp)
+                .requiredWidth(width = 412.dp)
+                .graphicsLayer(rotationZ = 0.14f))
+        Divider(
+            color = Color.Black.copy(alpha = 0.15f),
+            modifier = Modifier
+                .align(alignment = Alignment.TopStart)
+                .offset(x = 0.dp,
+                    y = 135.dp)
+                .requiredWidth(width = 412.dp)
+                .graphicsLayer(rotationZ = 0.14f))
+    }
+}
 
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
@@ -971,4 +1254,18 @@ private fun AndroidCompact9Preview() {
 private fun AndroidCompact10Preview() {
     val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
     AndroidCompact10(navController = previewNavController, Modifier)
+}
+
+@Preview(widthDp = 412, heightDp = 917)
+@Composable
+private fun AndroidCompact11Preview() {
+    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
+    AndroidCompact11(navController = previewNavController, Modifier)
+}
+
+@Preview(widthDp = 412, heightDp = 917)
+@Composable
+private fun AndroidCompact32Preview() {
+    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
+    AndroidCompact32(navController = previewNavController, Modifier)
 }

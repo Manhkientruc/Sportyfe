@@ -1084,8 +1084,58 @@ fun AndroidCompact11(navController: NavHostController, modifier: Modifier = Modi
 fun AndroidCompact32(navController: NavHostController) {
     // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
     Scaffold(
-        topBar = { TopBar() },     // Thanh trên cố định
-        bottomBar = { BottomBar() } // Thanh dưới cố định
+        topBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White) // Thanh trên nền trắng
+                    .padding(10.dp)
+                    .height(40.dp), // Độ cao của thanh trên
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Logo SPORTYFE
+                Image(
+                    painter = painterResource(id = R.drawable.img_45),
+                    contentDescription = "Sportyfe Logo",
+                    modifier = Modifier.size(150.dp)
+                )
+                Row {
+                    // Icon tìm kiếm
+                    Icon(
+                        painter = painterResource(id = R.drawable.search),
+                        contentDescription = "Search",
+                        modifier = Modifier
+                            .size(36.dp)
+                            .padding(end = 16.dp)
+                    )
+                    // Icon QR
+                    Icon(
+                        painter = painterResource(id = R.drawable.qr), // Thêm icon QR vào drawable
+                        contentDescription = "QR Code",
+                        modifier = Modifier.size(36.dp).padding(end = 16.dp)
+                    )
+                }
+            }
+        },     // Thanh trên cố định
+        bottomBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White) // Nền trắng
+                    .height(60.dp) // Độ cao của thanh dưới
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
+                BottomIcon(R.drawable.home, "Home")
+                BottomIcon(R.drawable.magnifier, "Search")
+                BottomIcon(R.drawable.heart, "Favorites")
+                BottomIcon(R.drawable.shoppingbag, "Cart")
+                BottomIcon(R.drawable.person, "Profile")
+            }
+        } // Thanh dưới cố định
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -1093,85 +1143,60 @@ fun AndroidCompact32(navController: NavHostController) {
                 .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                // Banner
-                BannerImage()
-
-                CategorySection()
-                // Grid hiển thị danh sách sản phẩm
-                ProductGrid()
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Text(
+                        text = "Hàng mới về",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontFamily = robotoMonoBold)
+                    )
+                }
+                Box (){
+                    val products = listOf(
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.size) { index ->
+                            ProductCard(
+                                imageResId = products[index].first,
+                                price = products[index].second,
+                                title = products[index].third
+                            )
+                        }
+                    }
+                }
             }
         }
-    }
-}
-
-@Composable
-fun TopBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White) // Thanh trên nền trắng
-            .padding(10.dp)
-            .height(40.dp), // Độ cao của thanh trên
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Logo SPORTYFE
-        Image(
-            painter = painterResource(id = R.drawable.img_45),
-            contentDescription = "Sportyfe Logo",
-            modifier = Modifier.size(150.dp)
-        )
-        Row {
-            // Icon tìm kiếm
-            Icon(
-                painter = painterResource(id = R.drawable.search),
-                contentDescription = "Search",
-                modifier = Modifier
-                    .size(36.dp)
-                    .padding(end = 16.dp)
-            )
-            // Icon QR
-            Icon(
-                painter = painterResource(id = R.drawable.qr), // Thêm icon QR vào drawable
-                contentDescription = "QR Code",
-                modifier = Modifier.size(36.dp).padding(end = 16.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun CategorySection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Hàng mới về",
-            style = MaterialTheme.typography.headlineSmall.copy(fontFamily = robotoMonoBold)
-        )
-    }
-}
-
-@Composable
-fun BottomBar() {
-    // Thanh dưới chứa các icon điều hướng
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White) // Nền trắng
-            .height(60.dp) // Độ cao của thanh dưới
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
-        BottomIcon(R.drawable.home, "Home")
-        BottomIcon(R.drawable.magnifier, "Search")
-        BottomIcon(R.drawable.heart, "Favorites")
-        BottomIcon(R.drawable.shoppingbag, "Cart")
-        BottomIcon(R.drawable.person, "Profile")
     }
 }
 
@@ -1182,47 +1207,6 @@ fun BottomIcon(iconRes: Int, contentDescription: String) {
         contentDescription = contentDescription,
         modifier = Modifier.size(24.dp)
     )
-}
-
-@Composable
-fun BannerImage() {
-    Image(
-        painter = painterResource(id = R.drawable.image1),
-        contentDescription = "Banner",
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp) // Thêm padding lề trái và lề phải
-            .height(200.dp)
-            .clip(RoundedCornerShape(8.dp)),
-        contentScale = ContentScale.Crop
-    )
-}
-
-@Composable
-fun ProductGrid() {
-    val products = listOf(
-        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter")
-    )
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        items(products.size) { index ->
-            ProductCard(
-                imageResId = products[index].first,
-                price = products[index].second,
-                title = products[index].third
-            )
-        }
-    }
 }
 
 @Composable

@@ -34,11 +34,13 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.BorderStroke
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.LaunchedEffect
 import kotlinx.coroutines.delay
 import androidx.compose.ui.text.font.Font
@@ -46,6 +48,23 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.material3.*
+import androidx.compose.ui.*
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.*
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
@@ -1062,145 +1081,210 @@ fun AndroidCompact11(navController: NavHostController, modifier: Modifier = Modi
     }
 }
 @Composable
-fun AndroidCompact32(navController: NavHostController, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .requiredWidth(width = 412.dp)
-            .requiredHeight(height = 917.dp)
-            .clip(shape = RoundedCornerShape(50.dp))
-            .background(color = Color.White)
+fun AndroidCompact32(navController: NavHostController) {
+    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
+    Scaffold(
+        topBar = { TopBar() },     // Thanh trên cố định
+        bottomBar = { BottomBar() } // Thanh dưới cố định
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Banner
+                BannerImage()
+
+                CategorySection()
+                // Grid hiển thị danh sách sản phẩm
+                ProductGrid()
+            }
+        }
+    }
+}
+
+@Composable
+fun TopBar() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White) // Thanh trên nền trắng
+            .padding(10.dp)
+            .height(40.dp), // Độ cao của thanh trên
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        // Logo SPORTYFE
         Image(
             painter = painterResource(id = R.drawable.img_45),
-            contentDescription = "45",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-95).dp,
-                    y = (-350).dp)
-                .requiredWidth(width = 134.dp)
-                .requiredHeight(height = 31.dp))
-        Image(
-            painter = painterResource(id = R.drawable.search),
-            contentDescription = "Interface essential/Magnifier",
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 120.dp,
-                    y = (-350).dp)
-                .requiredSize(size = 25.dp))
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 160.dp,
-                    y = (-350).dp)
-                .requiredSize(size = 28.dp)
-                .clip(shape = RoundedCornerShape(5.dp))
-                .background(color = Color.White)
-                .border(border = BorderStroke(1.dp, Color.Black),
-                    shape = RoundedCornerShape(5.dp)))
-        Image(
-            painter = painterResource(id = R.drawable.qr),
-            contentDescription = "Frame",
-            colorFilter = ColorFilter.tint(Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 160.dp,
-                    y = (-350).dp)
-                .requiredWidth(width = 19.dp)
-                .requiredHeight(height = 22.dp))
-        Image(
-            painter = painterResource(id = R.drawable.image1),
-            contentDescription = "image 1",
-            modifier = modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 0.dp,
-                    y = (-220).dp)
-                .requiredWidth(width = 330.dp)
-                .requiredHeight(height = 180.dp)
-                .clip(shape = RoundedCornerShape(21.dp)))
-        Box(
-            modifier = modifier
-                .requiredWidth(width = 50.dp)
-                .requiredHeight(height = 17.dp)
-                .align(alignment = Alignment.Center)
-                .offset(x = -100.dp,
-                    y = (-150).dp)
-                .background(color = Color.White)
-                .border(border = BorderStroke(2.dp, Color.Black))
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.vector),
-                contentDescription = "Vector",
-                modifier = modifier
-                    .align(alignment = Alignment.Center)
-                    .offset(x = 15.dp,
-                        y = (0).dp)
-                    .requiredWidth(width = 15.dp)
-                    .requiredHeight(height = 8.dp)
-                    .graphicsLayer(rotationZ = -90f)
+            contentDescription = "Sportyfe Logo",
+            modifier = Modifier.size(150.dp)
+        )
+        Row {
+            // Icon tìm kiếm
+            Icon(
+                painter = painterResource(id = R.drawable.search),
+                contentDescription = "Search",
+                modifier = Modifier
+                    .size(36.dp)
+                    .padding(end = 16.dp)
+            )
+            // Icon QR
+            Icon(
+                painter = painterResource(id = R.drawable.qr), // Thêm icon QR vào drawable
+                contentDescription = "QR Code",
+                modifier = Modifier.size(36.dp).padding(end = 16.dp)
             )
         }
-        Image(
-            painter = painterResource(id = R.drawable.magnifier),
-            contentDescription = "Interface essential/Magnifier",
-            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
+    }
+}
+
+@Composable
+fun CategorySection() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Hàng mới về",
+            style = MaterialTheme.typography.headlineSmall.copy(fontFamily = robotoMonoBold)
+        )
+    }
+}
+
+@Composable
+fun BottomBar() {
+    // Thanh dưới chứa các icon điều hướng
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White) // Nền trắng
+            .height(60.dp) // Độ cao của thanh dưới
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
+        BottomIcon(R.drawable.home, "Home")
+        BottomIcon(R.drawable.magnifier, "Search")
+        BottomIcon(R.drawable.heart, "Favorites")
+        BottomIcon(R.drawable.shoppingbag, "Cart")
+        BottomIcon(R.drawable.person, "Profile")
+    }
+}
+
+@Composable
+fun BottomIcon(iconRes: Int, contentDescription: String) {
+    Icon(
+        painter = painterResource(id = iconRes),
+        contentDescription = contentDescription,
+        modifier = Modifier.size(24.dp)
+    )
+}
+
+@Composable
+fun BannerImage() {
+    Image(
+        painter = painterResource(id = R.drawable.image1),
+        contentDescription = "Banner",
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp) // Thêm padding lề trái và lề phải
+            .height(200.dp)
+            .clip(RoundedCornerShape(8.dp)),
+        contentScale = ContentScale.Crop
+    )
+}
+
+@Composable
+fun ProductGrid() {
+    val products = listOf(
+        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter")
+    )
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        items(products.size) { index ->
+            ProductCard(
+                imageResId = products[index].first,
+                price = products[index].second,
+                title = products[index].third
+            )
+        }
+    }
+}
+
+@Composable
+fun ProductCard(imageResId: Int, price: String, title: String) {
+    // Card hiển thị thông tin sản phẩm
+    Card(
+        modifier = Modifier
+            .padding(5.dp)
+            .width(160.dp) // Chiều rộng cố định cho card
+            .height(175.dp), // Chiều cao cố định cho card
+        elevation = CardDefaults.cardElevation(4.dp),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Column(
             modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 120.dp,
-                    y = 780.dp)
-                .requiredSize(size = 25.dp))
-        Image(
-            painter = painterResource(id = R.drawable.heart),
-            contentDescription = "Icon",
-            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 192.dp,
-                    y = 780.dp)
-                .requiredSize(size = 25.dp))
-        Image(
-            painter = painterResource(id = R.drawable.shoppingbag),
-            contentDescription = "Comercial/Shopping-bag",
-            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 268.dp,
-                    y = 780.dp)
-                .requiredSize(size = 25.dp))
-        Image(
-            painter = painterResource(id = R.drawable.person),
-            contentDescription = "User/Person",
-            colorFilter = ColorFilter.tint(Color.Black.copy(alpha = 0.25f)),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 338.dp,
-                    y = 780.dp)
-                .requiredSize(size = 25.dp))
-        Image(
-            painter = painterResource(id = R.drawable.home),
-            contentDescription = "Icon",
-            colorFilter = ColorFilter.tint(Color(0xff000000)),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 48.dp,
-                    y = 780.dp)
-                .requiredSize(size = 25.dp))
-        Divider(
-            color = Color.Black.copy(alpha = 0.15f),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 0.dp,
-                    y = 765.dp)
-                .requiredWidth(width = 412.dp)
-                .graphicsLayer(rotationZ = 0.14f))
-        Divider(
-            color = Color.Black.copy(alpha = 0.15f),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 0.dp,
-                    y = 135.dp)
-                .requiredWidth(width = 412.dp)
-                .graphicsLayer(rotationZ = 0.14f))
+                .fillMaxSize()
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = imageResId),
+                contentDescription = title,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = price,
+                style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium,fontSize = 12.sp),
+                color = Color.Black,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontFamily = robotoMonoRegular,fontSize = 8.sp
+                ),
+                color = Color.Gray,
+                maxLines = 10,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.shoppingbag),
+                    contentDescription = "Add to Cart",
+                    modifier = Modifier.size(24.dp)
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.heart),
+                    contentDescription = "Favorite",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
     }
 }
 
@@ -1231,41 +1315,41 @@ private fun AndroidCompact3Preview() {
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact4Preview() {
-    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController() // Tạo NavController giả
     AndroidCompact4(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact5Preview() {
-    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController() // Tạo NavController giả
     AndroidCompact5(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact9Preview() {
-    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController() // Tạo NavController giả
     AndroidCompact9(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact10Preview() {
-    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController() // Tạo NavController giả
     AndroidCompact10(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact11Preview() {
-    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController() // Tạo NavController giả
     AndroidCompact11(navController = previewNavController, Modifier)
 }
 
-@Preview(widthDp = 412, heightDp = 917)
+@Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact32Preview() {
-    val previewNavController = androidx.navigation.compose.rememberNavController() // Tạo NavController giả
-    AndroidCompact32(navController = previewNavController, Modifier)
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact32(navController = previewNavController)
 }

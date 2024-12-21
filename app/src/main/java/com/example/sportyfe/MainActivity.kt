@@ -97,6 +97,9 @@ fun AppNavigation(navController: NavHostController) {
         composable("AndroidCompact10") { AndroidCompact10(navController) }
         composable("AndroidCompact11") { AndroidCompact11(navController) }
         composable("AndroidCompact32") { AndroidCompact32(navController) }
+        composable("AndroidCompact32_2") { AndroidCompact32_2(navController) }
+        composable("AndroidCompact32_3") { AndroidCompact32_3(navController) }
+        composable("AndroidCompact32_4") { AndroidCompact32_4(navController) }
     }
 }
 @Composable
@@ -1080,62 +1083,69 @@ fun AndroidCompact11(navController: NavHostController, modifier: Modifier = Modi
                 .graphicsLayer(rotationZ = 0.14f))
     }
 }
+
+@Composable
+fun TopBar(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White) // Thanh trên nền trắng
+            .padding(10.dp)
+            .height(40.dp), // Độ cao của thanh trên
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Logo SPORTYFE
+        Image(
+            painter = painterResource(id = R.drawable.img_45),
+            contentDescription = "Sportyfe Logo",
+            modifier = Modifier.size(150.dp)
+        )
+        Row {
+            // Icon tìm kiếm
+            Icon(
+                painter = painterResource(id = R.drawable.search),
+                contentDescription = "Search",
+                modifier = Modifier
+                    .size(36.dp)
+                    .padding(end = 16.dp)
+            )
+            // Icon QR
+            Icon(
+                painter = painterResource(id = R.drawable.qr), // Thêm icon QR vào drawable
+                contentDescription = "QR Code",
+                modifier = Modifier.size(36.dp).padding(end = 16.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun BottomBar(){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White) // Nền trắng
+            .height(60.dp) // Độ cao của thanh dưới
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
+        BottomIcon(R.drawable.home, "Home")
+        BottomIcon(R.drawable.magnifier, "Search")
+        BottomIcon(R.drawable.heart, "Favorites")
+        BottomIcon(R.drawable.shoppingbag, "Cart")
+        BottomIcon(R.drawable.person, "Profile")
+    }
+}
+
 @Composable
 fun AndroidCompact32(navController: NavHostController) {
     // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
     Scaffold(
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White) // Thanh trên nền trắng
-                    .padding(10.dp)
-                    .height(40.dp), // Độ cao của thanh trên
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Logo SPORTYFE
-                Image(
-                    painter = painterResource(id = R.drawable.img_45),
-                    contentDescription = "Sportyfe Logo",
-                    modifier = Modifier.size(150.dp)
-                )
-                Row {
-                    // Icon tìm kiếm
-                    Icon(
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = "Search",
-                        modifier = Modifier
-                            .size(36.dp)
-                            .padding(end = 16.dp)
-                    )
-                    // Icon QR
-                    Icon(
-                        painter = painterResource(id = R.drawable.qr), // Thêm icon QR vào drawable
-                        contentDescription = "QR Code",
-                        modifier = Modifier.size(36.dp).padding(end = 16.dp)
-                    )
-                }
-            }
-        },     // Thanh trên cố định
-        bottomBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White) // Nền trắng
-                    .height(60.dp) // Độ cao của thanh dưới
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
-                BottomIcon(R.drawable.home, "Home")
-                BottomIcon(R.drawable.magnifier, "Search")
-                BottomIcon(R.drawable.heart, "Favorites")
-                BottomIcon(R.drawable.shoppingbag, "Cart")
-                BottomIcon(R.drawable.person, "Profile")
-            }
-        } // Thanh dưới cố định
+        topBar = { TopBar() },     // Thanh trên cố định
+        bottomBar = { BottomBar() } // Thanh dưới cố định
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -1148,10 +1158,42 @@ fun AndroidCompact32(navController: NavHostController) {
                         .fillMaxWidth()
                         .padding(start = 16.dp)
                 ) {
-                    Text(
-                        text = "Hàng mới về",
-                        style = MaterialTheme.typography.headlineSmall.copy(fontFamily = robotoMonoBold)
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Text(
+                            text = "Hàng mới về",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium),
+                        )
+                        Text(
+                            text = "Best Seller",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoBold, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    // Điều hướng đến AndroidCompact33 khi bấm
+                                    navController.navigate("androidCompact32_2")
+                                }
+                        )
+                        Text(
+                            text = "Nam",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    // Điều hướng đến AndroidCompact33 khi bấm
+                                    navController.navigate("androidCompact32_3")
+                                }
+                        )
+                        Text(
+                            text = "Nữ",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    // Điều hướng đến AndroidCompact33 khi bấm
+                                    navController.navigate("androidCompact32_4")
+                                }
+                        )
+                    }
                 }
                 Box (){
                     val products = listOf(
@@ -1190,7 +1232,9 @@ fun AndroidCompact32(navController: NavHostController) {
                             ProductCard(
                                 imageResId = products[index].first,
                                 price = products[index].second,
-                                title = products[index].third
+                                title = products[index].third,
+                                badgeText = "NEW", // Nhãn hiển thị
+                                badgeColor = Color.Black
                             )
                         }
                     }
@@ -1210,13 +1254,13 @@ fun BottomIcon(iconRes: Int, contentDescription: String) {
 }
 
 @Composable
-fun ProductCard(imageResId: Int, price: String, title: String) {
+fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String? = null,badgeColor: Color = Color.Black) {
     // Card hiển thị thông tin sản phẩm
     Card(
         modifier = Modifier
             .padding(5.dp)
             .width(160.dp) // Chiều rộng cố định cho card
-            .height(175.dp), // Chiều cao cố định cho card
+            .height(220.dp), // Chiều cao cố định cho card
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
@@ -1226,6 +1270,21 @@ fun ProductCard(imageResId: Int, price: String, title: String) {
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            badgeText?.let {
+                Box(
+                    modifier = Modifier
+                        .background(badgeColor, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .align(Alignment.Start)
+                ) {
+                    Text(
+                        text = it,
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        fontFamily = robotoMonoBold
+                    )
+                }
+            }
             Image(
                 painter = painterResource(id = imageResId),
                 contentDescription = title,
@@ -1255,7 +1314,7 @@ fun ProductCard(imageResId: Int, price: String, title: String) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(top = 20.dp)
+                modifier = Modifier.fillMaxWidth().padding(top = 35.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.shoppingbag),
@@ -1267,6 +1326,308 @@ fun ProductCard(imageResId: Int, price: String, title: String) {
                     contentDescription = "Favorite",
                     modifier = Modifier.size(24.dp)
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun AndroidCompact32_2(navController: NavHostController) {
+    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
+    Scaffold(
+        topBar = { TopBar() },     // Thanh trên cố định
+        bottomBar = { BottomBar() } // Thanh dưới cố định
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Text(
+                            text = "Hàng mới về",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("androidCompact32")
+                                }
+
+                        )
+                        Text(
+                            text = "Best Seller",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoBold)
+                        )
+                        Text(
+                            text = "Nam",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("androidCompact32_3")
+                                }
+                        )
+                        Text(
+                            text = "Nữ",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("androidCompact32_4")
+                                }
+                        )
+                    }
+                }
+                Box (){
+                    val products = listOf(
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.size) { index ->
+                            ProductCard(
+                                imageResId = products[index].first,
+                                price = products[index].second,
+                                title = products[index].third,
+                                badgeText = "🔥",
+                                badgeColor = Color(0xCBFFC0CB)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AndroidCompact32_3(navController: NavHostController) {
+    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
+    Scaffold(
+        topBar = { TopBar() },     // Thanh trên cố định
+        bottomBar = { BottomBar() } // Thanh dưới cố định
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Text(
+                            text = "Hàng mới về",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("androidCompact32")
+                                }
+
+                        )
+                        Text(
+                            text = "Best Seller",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoBold, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("androidCompact32_2")
+                                }
+                        )
+                        Text(
+                            text = "Nam",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium),
+                        )
+                        Text(
+                            text = "Nữ",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("androidCompact32_4")
+                                }
+                        )
+                    }
+                }
+                Box (){
+                    val products = listOf(
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.size) { index ->
+                            ProductCard(
+                                imageResId = products[index].first,
+                                price = products[index].second,
+                                title = products[index].third,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AndroidCompact32_4(navController: NavHostController) {
+    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
+    Scaffold(
+        topBar = { TopBar() },     // Thanh trên cố định
+        bottomBar = { BottomBar() } // Thanh dưới cố định
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Text(
+                            text = "Hàng mới về",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("androidCompact32")
+                                }
+
+                        )
+                        Text(
+                            text = "Best Seller",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoBold, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("androidCompact32_2")
+                                }
+                        )
+                        Text(
+                            text = "Nam",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("androidCompact32_3")
+                                }
+                        )
+                        Text(
+                            text = "Nữ",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium),
+                        )
+                    }
+                }
+                Box (){
+                    val products = listOf(
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.size) { index ->
+                            ProductCard(
+                                imageResId = products[index].first,
+                                price = products[index].second,
+                                title = products[index].third,
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -1336,4 +1697,25 @@ private fun AndroidCompact11Preview() {
 private fun AndroidCompact32Preview() {
     val previewNavController = rememberNavController() // Tạo NavController giả
     AndroidCompact32(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact32_2Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact32_2(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact32_3Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact32_3(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact32_4Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact32_4(navController = previewNavController)
 }

@@ -1260,7 +1260,7 @@ fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String?
         modifier = Modifier
             .padding(5.dp)
             .width(160.dp) // Chiều rộng cố định cho card
-            .height(220.dp), // Chiều cao cố định cho card
+            .height(225.dp), // Chiều cao cố định cho card
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
@@ -1285,16 +1285,19 @@ fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String?
                     )
                 }
             }
-            Image(
-                painter = painterResource(id = imageResId),
-                contentDescription = title,
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.height(4.dp))
+                    .aspectRatio(1.5f) // Giữ tỷ lệ hình ảnh
+                    .clip(RoundedCornerShape(8.dp))
+            ) {
+                Image(
+                    painter = painterResource(id = imageResId),
+                    contentDescription = title,
+                    contentScale = ContentScale.Fit, // Giữ nguyên tỷ lệ hình ảnh
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
             Text(
                 text = price,
                 style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium,fontSize = 12.sp),
@@ -1311,20 +1314,21 @@ fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String?
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.fillMaxWidth()
             )
+            Spacer(modifier = Modifier.weight(1f))
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(top = 35.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.shoppingbag),
                     contentDescription = "Add to Cart",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(20.dp)
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.heart),
                     contentDescription = "Favorite",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
@@ -1388,26 +1392,26 @@ fun AndroidCompact32_2(navController: NavHostController) {
                     val products = listOf(
                         Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
                         Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
                         Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
                         Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
                         Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
                         Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
                         Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
                         Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
                     )
@@ -1490,28 +1494,28 @@ fun AndroidCompact32_3(navController: NavHostController) {
                     val products = listOf(
                         Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
                         Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
                         Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
                         Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
                         Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
                     )
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
@@ -1588,30 +1592,24 @@ fun AndroidCompact32_4(navController: NavHostController) {
                 }
                 Box (){
                     val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
+                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),
+                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
+                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
+                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
+                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
+                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
+                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
+                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
+                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),
                     )
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),

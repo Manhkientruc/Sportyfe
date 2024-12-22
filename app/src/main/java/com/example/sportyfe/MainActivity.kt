@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "AndroidCompact32") {
+    NavHost(navController = navController, startDestination = "AndroidCompact35") {
         composable("AndroidCompact1") { AndroidCompact1(navController) }
         composable("AndroidCompact2") { AndroidCompact2(navController) }
         composable("AndroidCompact3") { AndroidCompact3(navController) }
@@ -100,6 +100,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("AndroidCompact32_2") { AndroidCompact32_2(navController) }
         composable("AndroidCompact32_3") { AndroidCompact32_3(navController) }
         composable("AndroidCompact32_4") { AndroidCompact32_4(navController) }
+        composable("AndroidCompact35") { AndroidCompact35(navController) }
     }
 }
 @Composable
@@ -1090,8 +1091,7 @@ fun TopBar(){
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White) // Thanh trên nền trắng
-            .padding(10.dp)
-            .height(40.dp), // Độ cao của thanh trên
+            .height(60.dp), // Độ cao của thanh trên
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -1121,7 +1121,7 @@ fun TopBar(){
 }
 
 @Composable
-fun BottomBar(){
+fun BottomBar(navController: NavHostController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -1132,11 +1132,141 @@ fun BottomBar(){
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
-        BottomIcon(R.drawable.home, "Home")
-        BottomIcon(R.drawable.magnifier, "Search")
-        BottomIcon(R.drawable.heart, "Favorites")
-        BottomIcon(R.drawable.shoppingbag, "Cart")
-        BottomIcon(R.drawable.person, "Profile")
+        BottomIcon(R.drawable.home, "Home") {
+            navController.navigate("AndroidCompact32") // Chuyển đến AndroidCompact32
+        }
+        BottomIcon(R.drawable.magnifier, "Search") {
+            navController.navigate("#") // Chuyển đến AndroidCompact36
+        }
+        BottomIcon(R.drawable.heart, "Favorites") {
+            navController.navigate("AndroidCompact35") // Chuyển đến AndroidCompact35
+        }
+        BottomIcon(R.drawable.shoppingbag, "Cart") {
+            navController.navigate("#") // Chuyển đến AndroidCompact37
+        }
+        BottomIcon(R.drawable.person, "Profile") {
+            navController.navigate("#") // Chuyển đến AndroidCompact38
+        }
+    }
+}
+
+@Composable
+fun BottomBar2(navController: NavHostController){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White) // Nền trắng
+            .height(60.dp) // Độ cao của thanh dưới
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
+        BottomIcon(R.drawable.home_light, "Home") {
+            navController.navigate("AndroidCompact32") // Chuyển đến AndroidCompact32
+        }
+        BottomIcon(R.drawable.search, "Search") {
+            navController.navigate("#") // Chuyển đến AndroidCompact36
+        }
+        BottomIcon(R.drawable.heart, "Favorites") {
+            navController.navigate("AndroidCompact35") // Chuyển đến AndroidCompact35
+        }
+        BottomIcon(R.drawable.shoppingbag, "Cart") {
+            navController.navigate("#") // Chuyển đến AndroidCompact37
+        }
+        BottomIcon(R.drawable.person, "Profile") {
+            navController.navigate("#") // Chuyển đến AndroidCompact38
+        }
+    }
+}
+
+@Composable
+fun BottomBar3(navController: NavHostController){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White) // Nền trắng
+            .height(60.dp) // Độ cao của thanh dưới
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
+        BottomIcon(R.drawable.home_light, "Home") {
+            navController.navigate("AndroidCompact32") // Chuyển đến AndroidCompact32
+        }
+        BottomIcon(R.drawable.magnifier, "Search") {
+            navController.navigate("#") // Chuyển đến AndroidCompact36
+        }
+        BottomIcon(R.drawable.heart_bold, "Favorites") {
+            navController.navigate("AndroidCompact35") // Chuyển đến AndroidCompact35
+        }
+        BottomIcon(R.drawable.shoppingbag, "Cart") {
+            navController.navigate("#") // Chuyển đến AndroidCompact37
+        }
+        BottomIcon(R.drawable.person, "Profile") {
+            navController.navigate("#") // Chuyển đến AndroidCompact38
+        }
+    }
+}
+
+@Composable
+fun BottomBar4(navController: NavHostController){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White) // Nền trắng
+            .height(60.dp) // Độ cao của thanh dưới
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
+        BottomIcon(R.drawable.home_light, "Home") {
+            navController.navigate("AndroidCompact32") // Chuyển đến AndroidCompact32
+        }
+        BottomIcon(R.drawable.magnifier, "Search") {
+            navController.navigate("#") // Chuyển đến AndroidCompact36
+        }
+        BottomIcon(R.drawable.heart, "Favorites") {
+            navController.navigate("AndroidCompact35") // Chuyển đến AndroidCompact35
+        }
+        BottomIcon(R.drawable.shoppingbag_bold, "Cart") {
+            navController.navigate("#") // Chuyển đến AndroidCompact37
+        }
+        BottomIcon(R.drawable.person, "Profile") {
+            navController.navigate("#") // Chuyển đến AndroidCompact38
+        }
+    }
+}
+
+@Composable
+fun BottomBar5(navController: NavHostController){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White) // Nền trắng
+            .height(60.dp) // Độ cao của thanh dưới
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
+        BottomIcon(R.drawable.home_light, "Home") {
+            navController.navigate("AndroidCompact32") // Chuyển đến AndroidCompact32
+        }
+        BottomIcon(R.drawable.magnifier, "Search") {
+            navController.navigate("#") // Chuyển đến AndroidCompact36
+        }
+        BottomIcon(R.drawable.heart, "Favorites") {
+            navController.navigate("AndroidCompact35") // Chuyển đến AndroidCompact35
+        }
+        BottomIcon(R.drawable.shoppingbag, "Cart") {
+            navController.navigate("#") // Chuyển đến AndroidCompact37
+        }
+        BottomIcon(R.drawable.person_bold, "Profile") {
+            navController.navigate("#") // Chuyển đến AndroidCompact38
+        }
     }
 }
 
@@ -1145,7 +1275,7 @@ fun AndroidCompact32(navController: NavHostController) {
     // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
     Scaffold(
         topBar = { TopBar() },     // Thanh trên cố định
-        bottomBar = { BottomBar() } // Thanh dưới cố định
+        bottomBar = { BottomBar(navController) } // Thanh dưới cố định
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -1245,12 +1375,18 @@ fun AndroidCompact32(navController: NavHostController) {
 }
 
 @Composable
-fun BottomIcon(iconRes: Int, contentDescription: String) {
-    Icon(
-        painter = painterResource(id = iconRes),
-        contentDescription = contentDescription,
-        modifier = Modifier.size(24.dp)
-    )
+fun BottomIcon(iconRes: Int, label: String, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable { onClick() } // Thêm sự kiện click
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = label,
+            modifier = Modifier.size(24.dp) // Kích thước icon
+        )
+        Text(text = label, style = MaterialTheme.typography.bodySmall)
+    }
 }
 
 @Composable
@@ -1340,7 +1476,7 @@ fun AndroidCompact32_2(navController: NavHostController) {
     // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
     Scaffold(
         topBar = { TopBar() },     // Thanh trên cố định
-        bottomBar = { BottomBar() } // Thanh dưới cố định
+        bottomBar = { BottomBar(navController) } // Thanh dưới cố định
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -1442,7 +1578,7 @@ fun AndroidCompact32_3(navController: NavHostController) {
     // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
     Scaffold(
         topBar = { TopBar() },     // Thanh trên cố định
-        bottomBar = { BottomBar() } // Thanh dưới cố định
+        bottomBar = { BottomBar(navController) } // Thanh dưới cố định
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -1542,7 +1678,7 @@ fun AndroidCompact32_4(navController: NavHostController) {
     // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
     Scaffold(
         topBar = { TopBar() },     // Thanh trên cố định
-        bottomBar = { BottomBar() } // Thanh dưới cố định
+        bottomBar = { BottomBar(navController) } // Thanh dưới cố định
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -1631,6 +1767,95 @@ fun AndroidCompact32_4(navController: NavHostController) {
     }
 }
 
+@Composable
+fun AndroidCompact35(navController: NavHostController, modifier: Modifier = Modifier) {
+    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
+    Scaffold(
+        topBar = { TopBar() },     // Thanh trên cố định
+        bottomBar = { BottomBar3(navController) } // Thanh dưới cố định
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("androidCompact32")
+                                }
+                        )
+                        Text(
+                            text = "Danh sách yêu thích",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontFamily = robotoMonoMedium,
+                                color = Color.Black,
+                                fontSize = 12.sp
+                            )
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Chưa lưu mặt hàng",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black
+                            )
+                        )
+                        Text(
+                            text = "Nhấp vào biểu tượng trái tim để lưu các mặt hàng",
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontFamily = robotoMonoRegular,
+                                color = Color.Black,
+                                fontSize = 10.sp // Giảm kích cỡ chữ
+                            )
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .wrapContentWidth() // Chỉ đủ rộng để bọc nội dung
+                            .background(Color.Black)
+                            .padding(horizontal = 16.dp, vertical = 8.dp) // Thêm padding để tạo khoảng cách
+                            .align(Alignment.CenterHorizontally) // Căn giữa
+                    ) {
+                        Text(
+                            text = "Bắt đầu mua sắm",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.White,
+                                fontSize = 12.sp
+                            ),
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact1Preview() {
@@ -1716,4 +1941,11 @@ private fun AndroidCompact32_3Preview() {
 private fun AndroidCompact32_4Preview() {
     val previewNavController = rememberNavController() // Tạo NavController giả
     AndroidCompact32_4(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact35Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact35(navController = previewNavController)
 }

@@ -60,7 +60,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.style.TextOverflow
@@ -97,7 +99,9 @@ fun AppNavigation(navController: NavHostController) {
         composable("AndroidCompact9") { AndroidCompact9(navController) }
         composable("AndroidCompact10") { AndroidCompact10(navController) }
         composable("AndroidCompact11") { AndroidCompact11(navController) }
+        composable("AndroidCompact13") { AndroidCompact13(navController) }
         composable("AndroidCompact16") { AndroidCompact16(navController) }
+        composable("AndroidCompact24") { AndroidCompact24(navController) }
         composable("AndroidCompact32") { AndroidCompact32(navController) }
         composable("AndroidCompact32_2") { AndroidCompact32_2(navController) }
         composable("AndroidCompact32_3") { AndroidCompact32_3(navController) }
@@ -1092,29 +1096,29 @@ fun TopBar(navController: NavHostController){
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White) // Thanh trên nền trắng
-            .height(60.dp), // Độ cao của thanh trên
+            .background(Color.White)
+            .height(60.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Logo SPORTYFE
         Image(
             painter = painterResource(id = R.drawable.img_45),
             contentDescription = "Sportyfe Logo",
             modifier = Modifier.size(150.dp)
         )
         Row {
-            // Icon tìm kiếm
             Icon(
                 painter = painterResource(id = R.drawable.search),
                 contentDescription = "Search",
                 modifier = Modifier
                     .size(36.dp)
                     .padding(end = 16.dp)
+                    .clickable {
+                        navController.navigate("AndroidCompact13")
+                    }
             )
-            // Icon QR
             Icon(
-                painter = painterResource(id = R.drawable.qr), // Thêm icon QR vào drawable
+                painter = painterResource(id = R.drawable.qr),
                 contentDescription = "QR Code",
                 modifier = Modifier.size(36.dp).padding(end = 16.dp).clickable {navController.navigate("androidCompact8")}
             )
@@ -1138,7 +1142,7 @@ fun BottomBar(navController: NavHostController) {
             navController.navigate("AndroidCompact32")
         }
         BottomIcon(R.drawable.magnifier, "Search") {
-            navController.navigate("#")
+            navController.navigate("AndroidCompact13")
         }
         BottomIcon(R.drawable.heart, "Favorites") {
             navController.navigate("AndroidCompact36")
@@ -1147,7 +1151,7 @@ fun BottomBar(navController: NavHostController) {
             navController.navigate("AndroidCompact16")
         }
         BottomIcon(R.drawable.person, "Profile") {
-            navController.navigate("#")
+            navController.navigate("AndroidCompact24")
         }
     }
 }
@@ -1168,7 +1172,7 @@ fun BottomBar2(navController: NavHostController){
             navController.navigate("AndroidCompact32")
         }
         BottomIcon(R.drawable.search, "Search") {
-            navController.navigate("#")
+            navController.navigate("AndroidCompact13")
         }
         BottomIcon(R.drawable.heart, "Favorites") {
             navController.navigate("AndroidCompact36")
@@ -1177,7 +1181,7 @@ fun BottomBar2(navController: NavHostController){
             navController.navigate("AndroidCompact16")
         }
         BottomIcon(R.drawable.person, "Profile") {
-            navController.navigate("#")
+            navController.navigate("AndroidCompact24")
         }
     }
 }
@@ -1198,7 +1202,7 @@ fun BottomBar3(navController: NavHostController){
             navController.navigate("AndroidCompact32")
         }
         BottomIcon(R.drawable.magnifier, "Search") {
-            navController.navigate("#") // Chuyển đến AndroidCompact36
+            navController.navigate("AndroidCompact13")
         }
         BottomIcon(R.drawable.heart_bold, "Favorites") {
             navController.navigate("AndroidCompact36")
@@ -1207,7 +1211,7 @@ fun BottomBar3(navController: NavHostController){
             navController.navigate("AndroidCompact16")
         }
         BottomIcon(R.drawable.person, "Profile") {
-            navController.navigate("#")
+            navController.navigate("AndroidCompact24")
         }
     }
 }
@@ -1228,7 +1232,7 @@ fun BottomBar4(navController: NavHostController){
             navController.navigate("AndroidCompact32")
         }
         BottomIcon(R.drawable.magnifier, "Search") {
-            navController.navigate("#") // Chuyển đến AndroidCompact36
+            navController.navigate("AndroidCompact13")
         }
         BottomIcon(R.drawable.heart, "Favorites") {
             navController.navigate("AndroidCompact36")
@@ -1237,7 +1241,7 @@ fun BottomBar4(navController: NavHostController){
             navController.navigate("AndroidCompact16")
         }
         BottomIcon(R.drawable.person, "Profile") {
-            navController.navigate("#")
+            navController.navigate("AndroidCompact24")
         }
     }
 }
@@ -1255,19 +1259,19 @@ fun BottomBar5(navController: NavHostController){
     ) {
         // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
         BottomIcon(R.drawable.home_light, "Home") {
-            navController.navigate("AndroidCompact32") // Chuyển đến AndroidCompact32
+            navController.navigate("AndroidCompact32")
         }
         BottomIcon(R.drawable.magnifier, "Search") {
-            navController.navigate("#") // Chuyển đến AndroidCompact36
+            navController.navigate("AndroidCompact13")
         }
         BottomIcon(R.drawable.heart, "Favorites") {
-            navController.navigate("AndroidCompact36") // Chuyển đến AndroidCompact35
+            navController.navigate("AndroidCompact36")
         }
         BottomIcon(R.drawable.shoppingbag, "Cart") {
-            navController.navigate("AndroidCompact16") // Chuyển đến AndroidCompact37
+            navController.navigate("AndroidCompact16")
         }
         BottomIcon(R.drawable.person_bold, "Profile") {
-            navController.navigate("#") // Chuyển đến AndroidCompact38
+            navController.navigate("AndroidCompact24")
         }
     }
 }
@@ -2131,6 +2135,328 @@ fun AndroidCompact8(navController: NavHostController, modifier: Modifier = Modif
     }
 }
 
+@Composable
+fun AndroidCompact13(navController: NavHostController, modifier: Modifier = Modifier) {
+    val searchHistory = listOf(
+        "Giày",
+        "Dịch vụ khách hàng",
+        "Quần áo",
+        "Áo khoác",
+        "Túi xách",
+        "Mũ",
+        "Khăn choàng",
+        "Giày thể thao",
+        "Giày cao gót",
+        "Thắt lưng"
+    )
+    Scaffold(
+        bottomBar = { BottomBar2(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Box(
+                            modifier = modifier
+                                .requiredWidth(width = 250.dp)
+                                .requiredHeight(height = 40.dp)
+                                .clip(shape = RoundedCornerShape(100.dp))
+                                .background(color = Color(0xffe6e6e6))
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.camera),
+                                contentDescription = "Interface essential/Camera",
+                                colorFilter = ColorFilter.tint(Color.Black),
+                                modifier = Modifier
+                                    .align(alignment = Alignment.Center)
+                                    .offset(x = 100.dp,
+                                        y = 0.dp)
+                                    .requiredSize(size = 20.dp))
+                            Text(
+                                text = "Tìm sản phẩm...",
+                                color = Color(0xff000000),
+                                lineHeight = 9.em,
+                                style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontFamily = robotoMonoMedium),
+                                modifier = modifier
+                                    .align(alignment = Alignment.Center)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.search),
+                                contentDescription = "Interface essential/Magnifier",
+                                modifier = Modifier
+                                    .align(alignment = Alignment.Center)
+                                    .offset(x = -100.dp,
+                                        y = 0.dp)
+                                    .requiredSize(size = 20.dp))
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Box(
+                            modifier = modifier
+                                .requiredSize(size = 35.dp)
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .background(color = Color(0xffe6e6e6))
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.qr),
+                                contentDescription = "qr_code_example 2",
+                                modifier = Modifier
+                                    .align(alignment = Alignment.Center)
+                                    .requiredSize(size = 25.dp)
+                                    .clip(shape = RoundedCornerShape(6.dp)))
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(200.dp))
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                    }
+                    Box(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color.Black)
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .align(Alignment.CenterHorizontally)
+                    ) {
+                        Text(
+                            text = "Đã xem gần đây",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.White,
+                                fontSize = 16.sp
+                            ),
+                            modifier = Modifier.align(Alignment.Center).clickable{navController.navigate("androidCompact32")}
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(300.dp))
+                    Box (
+                        modifier = modifier
+                            .requiredSize(size = 412.dp)
+                            .background(color = Color(0xffe6e6e6))
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 30.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Lịch sử tìm kiếm...",
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = robotoMonoBold)
+                                )
+                                Text(
+                                    text = "Xóa tất cả",
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontFamily = robotoMonoBold, color = Color.Red),
+                                    modifier = Modifier.clickable { /* Xử lý xóa tất cả */ }
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                            ) {
+                                items(searchHistory) { item ->
+                                    SearchHistoryItem(item)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SearchHistoryItem(text: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.search),
+            contentDescription = null,
+            modifier = Modifier.size(16.dp),
+            tint = Color.Black
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
+}
+
+@Composable
+fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modifier) {
+    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
+    Scaffold(
+        bottomBar = { BottomBar5(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 40.dp, end = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.customerrembg1),
+                            contentDescription = "customer",
+                            modifier = modifier
+                                .requiredSize(size = 50.dp))
+                        Text(
+                            text = "ali123@gmail.com",
+                            color = Color.Black,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 9.em,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontFamily = robotoMonoBold),
+                            modifier = modifier
+                                .requiredWidth(width = 194.dp)
+                                .requiredHeight(height = 35.dp)
+                                .wrapContentHeight(align = Alignment.CenterVertically))
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.emai1),
+                            contentDescription = "Interface essential/emai-1",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = modifier
+                                .requiredSize(size = 30.dp)
+                                .clickable{}
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(50.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{}
+                    ) {
+                        Text(
+                            text = "Chỉnh sửa trang cá nhân",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Black,
+                            modifier = Modifier
+                                .align(alignment = Alignment.TopStart)
+                                .offset(x = 12.dp, y = 12.dp)
+                        )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{}
+                    ) {
+                        Text(
+                            text = "Chờ giao hàng",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Black,
+                            modifier = Modifier
+                                .align(alignment = Alignment.TopStart)
+                                .offset(x = 12.dp, y = 12.dp)
+                        )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{}
+                    ) {
+                        Text(
+                            text = "Lịch sử mua hàng",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Black,
+                            modifier = Modifier
+                                .align(alignment = Alignment.TopStart)
+                                .offset(x = 12.dp, y = 12.dp)
+                        )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{}
+                    ) {
+                        Text(
+                            text = "Đổi mật khẩu",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Black,
+                            modifier = Modifier
+                                .align(alignment = Alignment.TopStart)
+                                .offset(x = 12.dp, y = 12.dp)
+                        )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{}
+                    ) {
+                        Text(
+                            text = "Đăng xuất/Chuyển tài khoản",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Color.Red,
+                            modifier = Modifier
+                                .align(alignment = Alignment.TopStart)
+                                .offset(x = 12.dp, y = 12.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact1Preview() {
@@ -2237,4 +2563,18 @@ private fun AndroidCompact16Preview() {
 private fun AndroidCompact8Preview() {
     val previewNavController = rememberNavController() // Tạo NavController giả
     AndroidCompact16(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact13Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact13(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact24Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact24(navController = previewNavController)
 }

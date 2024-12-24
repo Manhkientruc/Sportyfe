@@ -89,7 +89,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "AndroidCompact36") {
+    NavHost(navController = navController, startDestination = "AndroidCompact59") {
         composable("AndroidCompact1") { AndroidCompact1(navController) }
         composable("AndroidCompact2") { AndroidCompact2(navController) }
         composable("AndroidCompact3") { AndroidCompact3(navController) }
@@ -107,6 +107,11 @@ fun AppNavigation(navController: NavHostController) {
         composable("AndroidCompact32_3") { AndroidCompact32_3(navController) }
         composable("AndroidCompact32_4") { AndroidCompact32_4(navController) }
         composable("AndroidCompact36") { AndroidCompact36(navController) }
+        composable("AndroidCompact40") { AndroidCompact40(navController) }
+        composable("AndroidCompact42") { AndroidCompact42(navController) }
+        composable("AndroidCompact46") { AndroidCompact46(navController) }
+        composable("AndroidCompact59") { AndroidCompact59(navController) }
+        composable("AndroidCompact71") { AndroidCompact71(navController) }
     }
 }
 @Composable
@@ -1307,7 +1312,6 @@ fun AndroidCompact32(navController: NavHostController) {
                             style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoBold, color = Color.Gray),
                             modifier = Modifier
                                 .clickable {
-                                    // Điều hướng đến AndroidCompact33 khi bấm
                                     navController.navigate("androidCompact32_2")
                                 }
                         )
@@ -1316,7 +1320,6 @@ fun AndroidCompact32(navController: NavHostController) {
                             style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
                             modifier = Modifier
                                 .clickable {
-                                    // Điều hướng đến AndroidCompact33 khi bấm
                                     navController.navigate("androidCompact32_3")
                                 }
                         )
@@ -1325,7 +1328,6 @@ fun AndroidCompact32(navController: NavHostController) {
                             style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium, color = Color.Gray),
                             modifier = Modifier
                                 .clickable {
-                                    // Điều hướng đến AndroidCompact33 khi bấm
                                     navController.navigate("androidCompact32_4")
                                 }
                         )
@@ -1581,15 +1583,14 @@ fun AndroidCompact32_2(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact32_3(navController: NavHostController) {
-    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
     Scaffold(
-        topBar = { TopBar(navController) },     // Thanh trên cố định
-        bottomBar = { BottomBar(navController) } // Thanh dưới cố định
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+                .padding(paddingValues)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Column(
@@ -1632,44 +1633,255 @@ fun AndroidCompact32_3(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate ("AndroidCompact59")}
                     ) {
-                        items(products.size) { index ->
-                            ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                        Text(
+                            text = "ÁO - NAM",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoMedium
+                            ),
+                            color = Color.Black,
+                            modifier = Modifier
+                                .align(alignment = Alignment.TopStart)
+                                .offset(x = 24.dp, y = 12.dp)
+                        )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate ("AndroidCompact71")}
+                    ) {
+                        Text(
+                            text = "GIÀY - NAM",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoMedium
+                            ),
+                            color = Color.Black,
+                            modifier = Modifier
+                                .align(alignment = Alignment.TopStart)
+                                .offset(x = 24.dp, y = 12.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+fun AndroidCompact59(navController: NavHostController) {
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("AndroidCompact32_3")
+                                }
+                        )
+                        Text(
+                            text = "NAM - ÁO",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.all_men_shirt),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "TẤT CẢ CÁC ÁO CHO NAM",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.polo_shirt),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "ÁO PHÔNG/ÁO POLO",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.hoodies_shirt),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "ÁO THUN/ÁO HOODIES",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.training_shirt),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "ÁO TẬP LUYỆN",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.jacket),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "ÁO KHOÁC",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
                             )
                         }
                     }
@@ -1678,18 +1890,224 @@ fun AndroidCompact32_3(navController: NavHostController) {
         }
     }
 }
-
 @Composable
-fun AndroidCompact32_4(navController: NavHostController) {
-    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
+fun AndroidCompact71(navController: NavHostController) {
     Scaffold(
-        topBar = { TopBar(navController) },     // Thanh trên cố định
-        bottomBar = { BottomBar(navController) } // Thanh dưới cố định
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("AndroidCompact32_3")
+                                }
+                        )
+                        Text(
+                            text = "NAM - GIÀY",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.all_shoe),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "TẤT CẢ GIÀY DÀNH CHO NAM",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.original_shoe),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "GIÀY ORIGINALS",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.running_shoe),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "GIÀY CHẠY BỘ",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.training_shoe),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "GIÀY TẬP LUYỆN/ĐÁ BÓNG",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.sandal),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "DÉP/DÉP XỎ NGÓN",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+fun AndroidCompact32_4(navController: NavHostController) {
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Column(
@@ -1732,38 +2150,254 @@ fun AndroidCompact32_4(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
-                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),
-                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
-                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
-                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
-                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
-                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
-                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
-                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
-                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),
-                    )
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("androidCompact42")}
                     ) {
-                        items(products.size) { index ->
-                            ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                        Text(
+                            text = "ÁO - NỮ",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoMedium
+                            ),                            color = Color.Black,
+                            modifier = Modifier
+                                .align(alignment = Alignment.TopStart)
+                                .offset(x = 24.dp, y = 12.dp)
+                        )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("androidCompact46")}
+                    ) {
+                        Text(
+                            text = "GIÀY - NỮ",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoMedium
+                            ),
+                            color = Color.Black,
+                            modifier = Modifier
+                                .align(alignment = Alignment.TopStart)
+                                .offset(x = 24.dp, y = 12.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+fun AndroidCompact42(navController: NavHostController) {
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("AndroidCompact32_4")
+                                }
+                        )
+                        Text(
+                            text = "NỮ - ÁO",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.all_women_shirt),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "TẤT CẢ CÁC ÁO CHO NỮ",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.women_t_shirt),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "ÁO PHÔNG/ÁO SƠ MI",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.women_hoodies_shirt),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "ÁO THUN/ÁO HOODIES",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.croptop),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "ÁO TẬP/ÁO CROPTOP",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.women_jacket),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "ÁO KHOÁC",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
                             )
                         }
                     }
@@ -1772,18 +2406,224 @@ fun AndroidCompact32_4(navController: NavHostController) {
         }
     }
 }
-
 @Composable
-fun AndroidCompact36(navController: NavHostController, modifier: Modifier = Modifier) {
-    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
+fun AndroidCompact46(navController: NavHostController) {
     Scaffold(
-        topBar = { TopBar(navController) },     // Thanh trên cố định
-        bottomBar = { BottomBar3(navController) } // Thanh dưới cố định
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("AndroidCompact32_3")
+                                }
+                        )
+                        Text(
+                            text = "NỮ - GIÀY",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.all_women_shoe),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "TẤT CẢ GIÀY DÀNH CHO NỮ",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.original_women_shoe),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "GIÀY ORIGINALS",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.women_running_shoe),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "GIÀY CHẠY BỘ",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.women_training_shoe),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "GIÀY TẬP LUYỆN",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(75.dp)
+                            .border(1.dp, Color.Gray)
+                            .clickable{navController.navigate("AndroidCompact")}
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.women_sandal),
+                                contentDescription = "Icon",
+                                modifier = Modifier
+                                    .size(50.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "DÉP/DÉP XỎ NGÓN",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoMedium
+                                ),
+                                color = Color.Black,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+fun AndroidCompact36(navController: NavHostController, modifier: Modifier = Modifier) {
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar3(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Column(
@@ -1818,7 +2658,7 @@ fun AndroidCompact36(navController: NavHostController, modifier: Modifier = Modi
                     Spacer(modifier = Modifier.weight(1f))
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(0.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
@@ -1889,7 +2729,7 @@ fun AndroidCompact16(navController: NavHostController, modifier: Modifier = Modi
                     }
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(0.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
@@ -2221,7 +3061,7 @@ fun AndroidCompact13(navController: NavHostController, modifier: Modifier = Modi
                     Spacer(modifier = Modifier.height(200.dp))
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(0.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                     }
@@ -2240,7 +3080,7 @@ fun AndroidCompact13(navController: NavHostController, modifier: Modifier = Modi
                                 color = Color.White,
                                 fontSize = 16.sp
                             ),
-                            modifier = Modifier.align(Alignment.Center).clickable{navController.navigate("androidCompact32")}
+                            modifier = Modifier.align(Alignment.Center).clickable{navController.navigate("androidCompact40")}
                         )
                     }
                     Spacer(modifier = Modifier.height(300.dp))
@@ -2363,7 +3203,7 @@ fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modi
                 Spacer(modifier = Modifier.height(50.dp))
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Box(
@@ -2376,7 +3216,9 @@ fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modi
                     ) {
                         Text(
                             text = "Chỉnh sửa trang cá nhân",
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoMedium
+                            ),
                             color = Color.Black,
                             modifier = Modifier
                                 .align(alignment = Alignment.TopStart)
@@ -2393,7 +3235,9 @@ fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modi
                     ) {
                         Text(
                             text = "Chờ giao hàng",
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoMedium
+                            ),
                             color = Color.Black,
                             modifier = Modifier
                                 .align(alignment = Alignment.TopStart)
@@ -2410,7 +3254,9 @@ fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modi
                     ) {
                         Text(
                             text = "Lịch sử mua hàng",
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoMedium
+                            ),
                             color = Color.Black,
                             modifier = Modifier
                                 .align(alignment = Alignment.TopStart)
@@ -2427,7 +3273,9 @@ fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modi
                     ) {
                         Text(
                             text = "Đổi mật khẩu",
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoMedium
+                            ),
                             color = Color.Black,
                             modifier = Modifier
                                 .align(alignment = Alignment.TopStart)
@@ -2444,12 +3292,85 @@ fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modi
                     ) {
                         Text(
                             text = "Đăng xuất/Chuyển tài khoản",
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoMedium
+                            ),
                             color = Color.Red,
                             modifier = Modifier
                                 .align(alignment = Alignment.TopStart)
                                 .offset(x = 12.dp, y = 12.dp)
                         )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AndroidCompact40(navController: NavHostController, modifier: Modifier = Modifier) {
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar2(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("androidCompact13")
+                                }
+                        )
+                        Text(
+                            text = "Đã xem gần đây",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Box (){
+                    val products = listOf(
+                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
+                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),
+                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
+                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
+                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.size) { index ->
+                            ProductCard(
+                                imageResId = products[index].first,
+                                price = products[index].second,
+                                title = products[index].third,
+                            )
+                        }
                     }
                 }
             }
@@ -2577,4 +3498,39 @@ private fun AndroidCompact13Preview() {
 private fun AndroidCompact24Preview() {
     val previewNavController = rememberNavController() // Tạo NavController giả
     AndroidCompact24(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact40Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact40(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact59Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact59(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact71Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact71(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact42Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact42(navController = previewNavController)
+}
+
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact46Preview() {
+    val previewNavController = rememberNavController() // Tạo NavController giả
+    AndroidCompact46(navController = previewNavController)
 }

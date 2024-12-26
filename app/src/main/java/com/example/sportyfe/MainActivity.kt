@@ -111,6 +111,11 @@ fun AppNavigation(navController: NavHostController) {
         composable("AndroidCompact42") { AndroidCompact42(navController) }
         composable("AndroidCompact46") { AndroidCompact46(navController) }
         composable("AndroidCompact59") { AndroidCompact59(navController) }
+        composable("AndroidCompact60") { AndroidCompact60(navController) }
+        composable("AndroidCompact67") { AndroidCompact67(navController) }
+        composable("AndroidCompact68") { AndroidCompact68(navController) }
+        composable("AndroidCompact69") { AndroidCompact69(navController) }
+        composable("AndroidCompact70") { AndroidCompact70(navController) }
         composable("AndroidCompact71") { AndroidCompact71(navController) }
     }
 }
@@ -1008,7 +1013,7 @@ fun AndroidCompact11(navController: NavHostController, modifier: Modifier = Modi
                 .requiredHeight(height = 22.dp))
         Box(
             modifier = Modifier
-                    .align(alignment = Alignment.Center)
+                .align(alignment = Alignment.Center)
                 .offset(x = 186.dp,
                     y = 822.dp)
                 .requiredSize(size = 35.dp)
@@ -1283,15 +1288,14 @@ fun BottomBar5(navController: NavHostController){
 
 @Composable
 fun AndroidCompact32(navController: NavHostController) {
-    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
     Scaffold(
-        topBar = { TopBar(navController) },     // Thanh trên cố định
-        bottomBar = { BottomBar(navController) } // Thanh dưới cố định
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+                .padding(paddingValues)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Column(
@@ -1371,7 +1375,7 @@ fun AndroidCompact32(navController: NavHostController) {
                                 imageResId = products[index].first,
                                 price = products[index].second,
                                 title = products[index].third,
-                                badgeText = "NEW", // Nhãn hiển thị
+                                badgeText = "NEW",
                                 badgeColor = Color.Black
                             )
                         }
@@ -1386,12 +1390,12 @@ fun AndroidCompact32(navController: NavHostController) {
 fun BottomIcon(iconRes: Int, label: String, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { onClick() } // Thêm sự kiện click
+        modifier = Modifier.clickable { onClick() }
     ) {
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = label,
-            modifier = Modifier.size(24.dp) // Kích thước icon
+            modifier = Modifier.size(24.dp)
         )
         Text(text = label, style = MaterialTheme.typography.bodySmall)
     }
@@ -1399,12 +1403,11 @@ fun BottomIcon(iconRes: Int, label: String, onClick: () -> Unit) {
 
 @Composable
 fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String? = null,badgeColor: Color = Color.Black) {
-    // Card hiển thị thông tin sản phẩm
     Card(
         modifier = Modifier
             .padding(5.dp)
-            .width(160.dp) // Chiều rộng cố định cho card
-            .height(225.dp), // Chiều cao cố định cho card
+            .width(160.dp)
+            .height(225.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
@@ -1432,13 +1435,13 @@ fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String?
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1.5f) // Giữ tỷ lệ hình ảnh
+                    .aspectRatio(1.5f)
                     .clip(RoundedCornerShape(8.dp))
             ) {
                 Image(
                     painter = painterResource(id = imageResId),
                     contentDescription = title,
-                    contentScale = ContentScale.Fit, // Giữ nguyên tỷ lệ hình ảnh
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -1736,7 +1739,7 @@ fun AndroidCompact59(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact70")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -1767,7 +1770,7 @@ fun AndroidCompact59(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact60")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -1798,7 +1801,7 @@ fun AndroidCompact59(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact67")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -1829,7 +1832,7 @@ fun AndroidCompact59(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact68")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -1860,7 +1863,7 @@ fun AndroidCompact59(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact69")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -1882,6 +1885,446 @@ fun AndroidCompact59(navController: NavHostController) {
                                     fontFamily = robotoMonoMedium
                                 ),
                                 color = Color.Black,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+fun AndroidCompact60(navController: NavHostController) {
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("AndroidCompact59")
+                                }
+                        )
+                        Text(
+                            text = "NAM - ÁO - ÁO PHÔNG/ÁO POLO",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Box (){
+                    val products = listOf(
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.size) { index ->
+                            ProductCard(
+                                imageResId = products[index].first,
+                                price = products[index].second,
+                                title = products[index].third,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+fun AndroidCompact67(navController: NavHostController) {
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("AndroidCompact59")
+                                }
+                        )
+                        Text(
+                            text = "NAM - ÁO - ÁO THUN/ÁO HOODIES",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Box (){
+                    val products = listOf(
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.size) { index ->
+                            ProductCard(
+                                imageResId = products[index].first,
+                                price = products[index].second,
+                                title = products[index].third,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+fun AndroidCompact68(navController: NavHostController) {
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("AndroidCompact59")
+                                }
+                        )
+                        Text(
+                            text = "NAM - ÁO - ÁO TẬP LUYỆN",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Box (){
+                    val products = listOf(
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.size) { index ->
+                            ProductCard(
+                                imageResId = products[index].first,
+                                price = products[index].second,
+                                title = products[index].third,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+fun AndroidCompact69(navController: NavHostController) {
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("AndroidCompact59")
+                                }
+                        )
+                        Text(
+                            text = "NAM - ÁO - ÁO KHOÁC",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Box (){
+                    val products = listOf(
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.size) { index ->
+                            ProductCard(
+                                imageResId = products[index].first,
+                                price = products[index].second,
+                                title = products[index].third,
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+fun AndroidCompact70(navController: NavHostController) {
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("AndroidCompact59")
+                                }
+                        )
+                        Text(
+                            text = "NAM - ÁO - TẤT CẢ",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Box (){
+                    val products = listOf(
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
+                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
+                    )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.size) { index ->
+                            ProductCard(
+                                imageResId = products[index].first,
+                                price = products[index].second,
+                                title = products[index].third,
                             )
                         }
                     }
@@ -3405,132 +3848,162 @@ private fun AndroidCompact3Preview() {
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact4Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact4(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact5Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact5(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact9Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact9(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact10Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact10(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact11Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact11(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact32Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact32(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact32_2Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact32_2(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact32_3Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact32_3(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact32_4Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact32_4(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact36Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact36(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact16Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact16(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 917)
 @Composable
 private fun AndroidCompact8Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact16(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact13Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact13(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact24Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact24(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact40Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact40(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact59Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact59(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact71Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact71(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact42Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact42(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact46Preview() {
-    val previewNavController = rememberNavController() // Tạo NavController giả
+    val previewNavController = rememberNavController()
     AndroidCompact46(navController = previewNavController)
+}
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact60Preview() {
+    val previewNavController = rememberNavController()
+    AndroidCompact60(navController = previewNavController)
+}
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact67Preview() {
+    val previewNavController = rememberNavController()
+    AndroidCompact67(navController = previewNavController)
+}
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact68Preview() {
+    val previewNavController = rememberNavController()
+    AndroidCompact68(navController = previewNavController)
+}
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact69Preview() {
+    val previewNavController = rememberNavController()
+    AndroidCompact69(navController = previewNavController)
+}
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact70Preview() {
+    val previewNavController = rememberNavController()
+    AndroidCompact70(navController = previewNavController)
 }

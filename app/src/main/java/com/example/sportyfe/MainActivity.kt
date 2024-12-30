@@ -66,6 +66,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.style.TextOverflow
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import android.util.Log
 import androidx.compose.ui.unit.*
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
@@ -89,7 +94,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "AndroidCompact1") {
+    NavHost(navController = navController, startDestination = "AndroidCompact58") {
         composable("AndroidCompact1") { AndroidCompact1(navController) }
         composable("AndroidCompact2") { AndroidCompact2(navController) }
         composable("AndroidCompact3") { AndroidCompact3(navController) }
@@ -133,8 +138,106 @@ fun AppNavigation(navController: NavHostController) {
         composable("AndroidCompact69") { AndroidCompact69(navController) }
         composable("AndroidCompact70") { AndroidCompact70(navController) }
         composable("AndroidCompact71") { AndroidCompact71(navController) }
+        composable("AndroidCompact94") { AndroidCompact94(navController) }
     }
 }
+data class Product(
+    val image: Int = 0,
+    val price: Long = 0,
+    val tittle: String = ""
+)
+private val imageMap = mapOf(
+    821 to R.drawable.img_821,
+    822 to R.drawable.img_822,
+    823 to R.drawable.img_823,
+    100 to R.drawable.ig_100,
+    101 to R.drawable.ig_101,
+    102 to R.drawable.ig_102,
+    103 to R.drawable.ig_103,
+    104 to R.drawable.ig_104,
+    105 to R.drawable.ig_105,
+    106 to R.drawable.ig_106,
+    107 to R.drawable.ig_107,
+    108 to R.drawable.ig_108,
+    109 to R.drawable.ig_109,
+    110 to R.drawable.ig_110,
+    111 to R.drawable.ig_111,
+    112 to R.drawable.ig_112,
+    113 to R.drawable.ig_113,
+    114 to R.drawable.ig_114,
+    115 to R.drawable.ig_115,
+    116 to R.drawable.ig_116,
+    117 to R.drawable.ig_117,
+    118 to R.drawable.ig_118,
+    119 to R.drawable.ig_119,
+    120 to R.drawable.ig_120,
+    121 to R.drawable.ig_121,
+    122 to R.drawable.ig_122,
+    123 to R.drawable.ig_123,
+    124 to R.drawable.ig_124,
+    125 to R.drawable.ig_125,
+    126 to R.drawable.ig_126,
+    127 to R.drawable.ig_127,
+    128 to R.drawable.ig_128,
+    129 to R.drawable.ig_129,
+    130 to R.drawable.ig_130,
+    131 to R.drawable.ig_131,
+    132 to R.drawable.ig_132,
+    133 to R.drawable.ig_133,
+    134 to R.drawable.ig_134,
+    135 to R.drawable.ig_135,
+    136 to R.drawable.ig_136,
+    137 to R.drawable.ig_137,
+    138 to R.drawable.ig_138,
+    139 to R.drawable.ig_139,
+    140 to R.drawable.ig_140,
+    141 to R.drawable.ig_141,
+    142 to R.drawable.ig_142,
+    143 to R.drawable.ig_143,
+    144 to R.drawable.ig_144,
+    145 to R.drawable.ig_145,
+    146 to R.drawable.ig_146,
+    147 to R.drawable.ig_147,
+    148 to R.drawable.ig_148,
+    149 to R.drawable.ig_149,
+    150 to R.drawable.ig_150,
+    151 to R.drawable.ig_151,
+    152 to R.drawable.ig_152,
+    153 to R.drawable.ig_153,
+    154 to R.drawable.ig_154,
+    155 to R.drawable.ig_155,
+    156 to R.drawable.ig_156,
+    157 to R.drawable.ig_157,
+    158 to R.drawable.ig_158,
+    159 to R.drawable.ig_159,
+    160 to R.drawable.ig_160,
+    161 to R.drawable.ig_161,
+    162 to R.drawable.ig_162,
+    163 to R.drawable.ig_163,
+    164 to R.drawable.ig_164,
+    165 to R.drawable.ig_165,
+    166 to R.drawable.ig_166,
+    167 to R.drawable.ig_167,
+    168 to R.drawable.ig_168,
+    169 to R.drawable.ig_169,
+    170 to R.drawable.ig_170,
+    171 to R.drawable.ig_171,
+    172 to R.drawable.ig_172,
+    173 to R.drawable.ig_173,
+    174 to R.drawable.ig_174,
+    175 to R.drawable.ig_175,
+    176 to R.drawable.ig_176,
+    177 to R.drawable.ig_177,
+    178 to R.drawable.ig_178,
+    179 to R.drawable.ig_179,
+    180 to R.drawable.ig_180,
+    181 to R.drawable.ig_181,
+    182 to R.drawable.ig_182,
+    183 to R.drawable.ig_183,
+    184 to R.drawable.ig_184,
+    185 to R.drawable.ig_185,
+    186 to R.drawable.ig_186
+)
 @Composable
 fun AndroidCompact1(navController: NavHostController, modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
@@ -1304,6 +1407,48 @@ fun BottomBar5(navController: NavHostController){
 
 @Composable
 fun AndroidCompact32(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -1353,44 +1498,19 @@ fun AndroidCompact32(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle,
                                 badgeText = "NEW",
                                 badgeColor = Color.Black
                             )
@@ -1416,14 +1536,26 @@ fun BottomIcon(iconRes: Int, label: String, onClick: () -> Unit) {
         Text(text = label, style = MaterialTheme.typography.bodySmall)
     }
 }
-
+fun Long.formatPrice(): String {
+    return "đ ${String.format("%,d", this)}"  // Sẽ format: đ 1,500,000
+    // Hoặc
+    // return "đ ${DecimalFormat("#,###").format(this)}"  // Sẽ format: đ 1.500.000
+}
 @Composable
-fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String? = null,badgeColor: Color = Color.Black) {
+fun ProductCard(
+    imageResId: Int,
+    price: Long,  // Thay đổi kiểu dữ liệu
+    tittle: String,
+    badgeText: String? = null,
+    badgeColor: Color = Color.Black,
+    onAddToCart: () -> Unit = {},
+    onFavorite: () -> Unit = {}
+) {
     Card(
         modifier = Modifier
             .padding(5.dp)
             .width(160.dp)
-            .height(225.dp),
+            .height(200.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
@@ -1433,6 +1565,7 @@ fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String?
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Badge hiển thị nếu có
             badgeText?.let {
                 Box(
                     modifier = Modifier
@@ -1448,6 +1581,8 @@ fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String?
                     )
                 }
             }
+
+            // Hình ảnh sản phẩm
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1456,28 +1591,43 @@ fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String?
             ) {
                 Image(
                     painter = painterResource(id = imageResId),
-                    contentDescription = title,
+                    contentDescription = tittle,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
                 )
             }
+
+            // Giá sản phẩm
             Text(
-                text = price,
-                style = MaterialTheme.typography.bodyLarge.copy(fontFamily = robotoMonoMedium,fontSize = 12.sp),
+                text = price.formatPrice(),  // Format price khi hiển thị
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = robotoMonoMedium,
+                    fontSize = 12.sp
+                ),
                 color = Color.Black,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
             )
+
+            // Tên sản phẩm
             Text(
-                text = title,
+                text = tittle,
                 style = MaterialTheme.typography.bodySmall.copy(
-                    fontFamily = robotoMonoRegular,fontSize = 8.sp
+                    fontFamily = robotoMonoRegular,
+                    fontSize = 10.sp
                 ),
                 color = Color.Gray,
-                maxLines = 10,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp)
             )
+
             Spacer(modifier = Modifier.weight(1f))
+
+            // Hàng chứa nút tương tác
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -1486,22 +1636,65 @@ fun ProductCard(imageResId: Int, price: String, title: String,badgeText: String?
                 Icon(
                     painter = painterResource(id = R.drawable.heart),
                     contentDescription = "Favorite",
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clickable { onFavorite() }
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.shoppingbag),
                     contentDescription = "Add to Cart",
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clickable { onAddToCart() }
                 )
-
             }
         }
     }
 }
-
 @Composable
 fun AndroidCompact32_2(navController: NavHostController) {
-    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },     // Thanh trên cố định
         bottomBar = { BottomBar(navController) } // Thanh dưới cố định
@@ -1552,44 +1745,19 @@ fun AndroidCompact32_2(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle,
                                 badgeText = "🔥",
                                 badgeColor = Color(0xCBFFC0CB)
                             )
@@ -1912,6 +2080,47 @@ fun AndroidCompact59(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact60(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -1952,44 +2161,19 @@ fun AndroidCompact60(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -1999,7 +2183,155 @@ fun AndroidCompact60(navController: NavHostController) {
     }
 }
 @Composable
+fun AndroidCompact94(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
+    Scaffold(
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar(navController) }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.vector),
+                            contentDescription = "Arrow",
+                            colorFilter = ColorFilter.tint(Color.Black),
+                            modifier = Modifier
+                                .requiredWidth(10.dp)
+                                .requiredHeight(16.dp)
+                                .clickable {
+                                    navController.navigate("AndroidCompact71")
+                                }
+                        )
+                        Text(
+                            text = "NAM - GIÀY - TẤT CẢ SẢN PHẨM",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontFamily = robotoMonoBold,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+                }
+                Box {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
+                    ) {
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
+                            ProductCard(
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun AndroidCompact67(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -2040,44 +2372,19 @@ fun AndroidCompact67(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -2088,6 +2395,48 @@ fun AndroidCompact67(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact68(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -2155,44 +2504,19 @@ fun AndroidCompact68(navController: NavHostController) {
                                 .requiredSize(size = 32.dp))
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -2203,6 +2527,48 @@ fun AndroidCompact68(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact69(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -2243,44 +2609,19 @@ fun AndroidCompact69(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -2291,6 +2632,48 @@ fun AndroidCompact69(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact70(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -2331,44 +2714,19 @@ fun AndroidCompact70(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -2431,7 +2789,7 @@ fun AndroidCompact71(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact94")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2462,7 +2820,7 @@ fun AndroidCompact71(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact61")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2493,7 +2851,7 @@ fun AndroidCompact71(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact62")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2524,7 +2882,7 @@ fun AndroidCompact71(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact63")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2555,7 +2913,7 @@ fun AndroidCompact71(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact65")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2739,7 +3097,7 @@ fun AndroidCompact42(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact51")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2770,7 +3128,7 @@ fun AndroidCompact42(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact47")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2801,7 +3159,7 @@ fun AndroidCompact42(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact48")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2832,7 +3190,7 @@ fun AndroidCompact42(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact49")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2863,7 +3221,7 @@ fun AndroidCompact42(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact50")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2922,7 +3280,7 @@ fun AndroidCompact46(navController: NavHostController) {
                                 .requiredWidth(10.dp)
                                 .requiredHeight(16.dp)
                                 .clickable {
-                                    navController.navigate("AndroidCompact32_3")
+                                    navController.navigate("AndroidCompact32_4")
                                 }
                         )
                         Text(
@@ -2947,7 +3305,7 @@ fun AndroidCompact46(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact58")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -2978,7 +3336,7 @@ fun AndroidCompact46(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact53")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -3009,7 +3367,7 @@ fun AndroidCompact46(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact54")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -3040,7 +3398,7 @@ fun AndroidCompact46(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact55")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -3071,7 +3429,7 @@ fun AndroidCompact46(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact")}
+                            .clickable{navController.navigate("AndroidCompact57")}
                     ) {
                         Row(
                             modifier = Modifier
@@ -3796,6 +4154,48 @@ fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modi
 
 @Composable
 fun AndroidCompact40(navController: NavHostController, modifier: Modifier = Modifier) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar2(navController) }
@@ -3836,26 +4236,19 @@ fun AndroidCompact40(navController: NavHostController, modifier: Modifier = Modi
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
-                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),
-                        Triple(R.drawable.img_172, "đ 3.000.000", "[NỮ] \nGiày thể thao SweButter"),
-                        Triple(R.drawable.img_173, "đ 3.000.000", "[NỮ] \nGiày thể thao Crechesse"),
-                        Triple(R.drawable.img_179, "đ 3.000.000", "[NỮ] \nÁo Hoodies Pullover "),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -3866,6 +4259,48 @@ fun AndroidCompact40(navController: NavHostController, modifier: Modifier = Modi
 }
 @Composable
 fun AndroidCompact58(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -3918,44 +4353,19 @@ fun AndroidCompact58(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -3967,6 +4377,48 @@ fun AndroidCompact58(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact57(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -4019,44 +4471,19 @@ fun AndroidCompact57(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -4068,6 +4495,48 @@ fun AndroidCompact57(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact56(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -4120,44 +4589,19 @@ fun AndroidCompact56(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -4169,6 +4613,48 @@ fun AndroidCompact56(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact55(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -4221,44 +4707,19 @@ fun AndroidCompact55(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -4269,6 +4730,48 @@ fun AndroidCompact55(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact54(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -4321,44 +4824,19 @@ fun AndroidCompact54(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -4370,6 +4848,48 @@ fun AndroidCompact54(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact53(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -4422,44 +4942,19 @@ fun AndroidCompact53(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -4470,6 +4965,48 @@ fun AndroidCompact53(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact51(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -4522,44 +5059,19 @@ fun AndroidCompact51(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -4571,6 +5083,48 @@ fun AndroidCompact51(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact50(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -4623,44 +5177,19 @@ fun AndroidCompact50(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -4671,6 +5200,48 @@ fun AndroidCompact50(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact48(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -4723,44 +5294,19 @@ fun AndroidCompact48(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -4771,6 +5317,48 @@ fun AndroidCompact48(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact49(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -4823,44 +5411,19 @@ fun AndroidCompact49(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -4871,6 +5434,48 @@ fun AndroidCompact49(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact47(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -4923,44 +5528,19 @@ fun AndroidCompact47(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -4971,6 +5551,48 @@ fun AndroidCompact47(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact61(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -5011,44 +5633,19 @@ fun AndroidCompact61(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -5059,6 +5656,48 @@ fun AndroidCompact61(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact62(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -5099,44 +5738,19 @@ fun AndroidCompact62(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -5147,6 +5761,48 @@ fun AndroidCompact62(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact63(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -5187,44 +5843,19 @@ fun AndroidCompact63(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -5235,6 +5866,48 @@ fun AndroidCompact63(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact64(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -5275,44 +5948,19 @@ fun AndroidCompact64(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -5323,6 +5971,48 @@ fun AndroidCompact64(navController: NavHostController) {
 }
 @Composable
 fun AndroidCompact65(navController: NavHostController) {
+    val products = remember { mutableStateOf(emptyList<Product>()) }
+
+    LaunchedEffect(Unit) {
+        val database = FirebaseDatabase.getInstance().getReference("products")
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val productList = mutableListOf<Product>()
+                for (child in snapshot.children) {
+                    try {
+                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
+                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+
+                        // Ánh xạ image từ số sang drawable
+                        val drawableResId = imageMap[image]
+                        if (drawableResId != null) {
+                            productList.add(
+                                Product(
+                                    image = drawableResId,
+                                    price = priceValue,
+                                    tittle = tittle
+                                )
+                            )
+                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
+                        } else {
+                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
+                    }
+                }
+
+                products.value = productList
+                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
+            }
+        })
+    }
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -5363,44 +6053,19 @@ fun AndroidCompact65(navController: NavHostController) {
                         )
                     }
                 }
-                Box (){
-                    val products = listOf(
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_171, "đ 2.000.000", "[NAM] \nGiày thể thao Oceanfire"),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_177, "đ 1.500.000", "[NAM] \nÁo Hoodie CrossSight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_175, "đ 2.000.000", "[NAM] \nÁo Hoodie CrossMight "),
-                        Triple(R.drawable.img_172, "đ 2.000.000", "[NAM] \nGiày thể thao Volabyss"),
-                    )
+                Box {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.size) { index ->
+                        items(products.value.size) { index ->
+                            val product = products.value[index]
                             ProductCard(
-                                imageResId = products[index].first,
-                                price = products[index].second,
-                                title = products[index].third,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle
                             )
                         }
                     }
@@ -5708,4 +6373,10 @@ private fun AndroidCompact69Preview() {
 private fun AndroidCompact70Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact70(navController = previewNavController)
+}
+@Preview(widthDp = 412, heightDp = 1283)
+@Composable
+private fun AndroidCompact94Preview() {
+    val previewNavController = rememberNavController()
+    AndroidCompact94(navController = previewNavController)
 }

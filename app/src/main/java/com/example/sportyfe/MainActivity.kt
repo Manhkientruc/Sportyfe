@@ -72,6 +72,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import android.util.Log
 import androidx.compose.ui.unit.*
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
@@ -94,7 +96,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "AndroidCompact58") {
+    NavHost(navController = navController, startDestination = "AndroidCompact5") {
         composable("AndroidCompact1") { AndroidCompact1(navController) }
         composable("AndroidCompact2") { AndroidCompact2(navController) }
         composable("AndroidCompact3") { AndroidCompact3(navController) }
@@ -341,535 +343,442 @@ fun AndroidCompact3(navController: NavHostController, modifier: Modifier = Modif
 
 @Composable
 fun AndroidCompact4(navController: NavHostController, modifier: Modifier = Modifier) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
-            .requiredWidth(width = 412.dp)
-            .requiredHeight(height = 917.dp)
-            .clip(shape = RoundedCornerShape(50.dp))
+            .fillMaxSize()
             .background(color = Color.White)
     ) {
+        // Logo
         Image(
             painter = painterResource(id = R.drawable.img_45),
-            contentDescription = "45",
+            contentDescription = "Logo",
             modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 10.5.dp,
-                    y = (-248.53125).dp)
-                .requiredWidth(width = 295.dp)
-                .requiredHeight(height = 166.dp))
-        Text(
-            text = "Đăng nhập",
-            color = Color.Black,
-            lineHeight = 9.em,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontFamily = robotoMonoBold),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-106.5).dp,
-                    y = (-115.5).dp)
-                .wrapContentHeight(align = Alignment.CenterVertically))
-        Text(
-            text = "Nhớ mật khẩu",
-            color = Color.Black,
-            lineHeight = 14.4.em,
-            style = TextStyle(
-                fontSize = 10.sp,
-                fontFamily = robotoMonoLight),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-90.5).dp,
-                    y = 34.5.dp))
-        Image(
-            painter = painterResource(
-                id = if (isChecked) R.drawable.squarechecksolid1 else R.drawable.squarechecksolid),
-            contentDescription = if (isChecked) "Checked" else "Unchecked",
-            colorFilter = ColorFilter.tint(if (isChecked) Color.Black else Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 57.dp, y = 487.dp)
-                .requiredSize(size = 12.dp)
-                .clickable {
-                    isChecked = !isChecked // Đổi trạng thái khi bấm
-                }
+                .align(Alignment.TopCenter)
+                .padding(top = 50.dp)
+                .size(width = 295.dp, height = 166.dp)
         )
-        Text(
-            text = "Quên mật khẩu?",
-            color = Color.Black,
-            textDecoration = TextDecoration.Underline,
-            lineHeight = 14.4.em,
-            style = TextStyle(
-                fontSize = 10.sp,
-                fontFamily = robotoMonoBold),
+
+        Column(
             modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 110.5.dp,
-                    y = 34.5.dp)
-                .wrapContentHeight(align = Alignment.CenterVertically))
-        Text(
-            text = "Đăng nhập với",
-            color = Color.Black,
-            lineHeight = 14.4.em,
-            style = TextStyle(
-                fontSize = 10.sp,
-                fontFamily = robotoMonoBold),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 0.5029296875.dp,
-                    y = 194.5.dp)
-                .wrapContentHeight(align = Alignment.CenterVertically))
-        Text(
-            lineHeight = 14.sp,
-            text = buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(
-                        color = Color.Black,
-                        fontSize = 10.sp,
-                        fontFamily = robotoMonoBold
+                .fillMaxSize()
+                .padding(top = 230.dp)
+                .padding(horizontal = 20.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Đăng nhập",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontFamily = robotoMonoMedium,
+                    color = Color.Black
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            InputField(
+                value = email,
+                onValueChange = { email = it },
+                label = "E-mail"
+            )
+            InputField(
+                value = password,
+                onValueChange = { password = it },
+                label = "Mật khẩu",
+                isPassword = true
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = isChecked,
+                        onCheckedChange = { isChecked = it },
+                        colors = CheckboxDefaults.colors(Color.Black)
                     )
-                ) { append("Bạn chưa có tài khoản?         ") }
-            },
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-20).dp, y = 283.5.dp)
-                .wrapContentHeight(align = Alignment.CenterVertically)
-        )
-
-        Text(
-            text = "Đăng ký",
-            color = Color(0xff2106f3),
-            fontSize = 10.sp,
-            fontFamily = robotoMonoBold,
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (60).dp, y = 283.5.dp)
-                .wrapContentHeight(align = Alignment.CenterVertically)
-                .clickable {
-                    navController.navigate("AndroidCompact5") // Chuyển sang AndroidCompact5
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Nhớ mật khẩu",
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            fontFamily = robotoMonoLight,
+                            color = Color.Black
+                        )
+                    )
                 }
-        )
 
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 3.5.dp,
-                    y = (-66.5).dp)
-                .requiredWidth(width = 309.dp)
-                .requiredHeight(height = 46.dp)
-                .clip(shape = RoundedCornerShape(30.dp))
-                .background(color = Color.White)
-                .border(border = BorderStroke(1.5.dp, Color.Black),
-                    shape = RoundedCornerShape(30.dp)))
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 0.dp,
-                    y = 131.5.dp)
-                .requiredWidth(width = 214.dp)
-                .requiredHeight(height = 46.dp)
-                .clip(shape = RoundedCornerShape(30.dp))
-                .background(color = Color.Black))
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 3.5.dp,
-                    y = (-3.5).dp)
-                .requiredWidth(width = 309.dp)
-                .requiredHeight(height = 46.dp)
-                .clip(shape = RoundedCornerShape(30.dp))
-                .background(color = Color.White)
-                .border(border = BorderStroke(1.5.dp, Color.Black),
-                    shape = RoundedCornerShape(30.dp)))
-        Image(
-            painter = painterResource(id = R.drawable.line1),
-            contentDescription = "Line 1",
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 163.dp,
-                    y = 639.5059204101562.dp)
-                .requiredWidth(width = 86.dp)
-                .border(border = BorderStroke(2.dp, Color.Black)))
-        Image(
-            painter = painterResource(id = R.drawable.fb),
-            contentDescription = "Frame",
-            colorFilter = ColorFilter.tint(Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 137.dp,
-                    y = 683.dp)
-                .requiredSize(size = 25.dp))
-        Image(
-            painter = painterResource(id = R.drawable.gg),
-            contentDescription = "Frame",
-            colorFilter = ColorFilter.tint(Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 192.dp,
-                    y = 683.dp)
-                .requiredWidth(width = 25.dp)
-                .requiredHeight(height = 26.dp))
-        Image(
-            painter = painterResource(id = R.drawable.ap),
-            contentDescription = "Frame",
-            colorFilter = ColorFilter.tint(Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 249.dp,
-                    y = 676.dp)
-                .requiredWidth(width = 25.dp)
-                .requiredHeight(height = 33.dp))
-        Image(
-            painter = painterResource(id = R.drawable.vector),
-            contentDescription = "Frame",
-            colorFilter = ColorFilter.tint(Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 50.dp,
-                    y = 110.dp)
-                .requiredWidth(width = 10.dp)
-                .requiredHeight(height = 16.dp))
-        Text(
-            text = "E-mail",
-            color = Color.Black,
-            lineHeight = 10.29.em,
-            style = TextStyle(
-                fontSize = 10.sp,
-                fontFamily = robotoMonoLight),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-91).dp,
-                    y = (-3.5).dp)
-                .requiredWidth(width = 76.dp)
-                .requiredHeight(height = 144.dp))
-        Text(
-            text = "Mật khẩu",
-            color = Color.Black,
-            lineHeight = 10.29.em,
-            style = TextStyle(
-                fontSize = 10.sp,
-                fontFamily = robotoMonoLight),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-91).dp,
-                    y = (60).dp)
-                .requiredWidth(width = 76.dp)
-                .requiredHeight(height = 144.dp))
-        Text(
-            text = "Đăng nhập",
-            color = Color.White,
-            lineHeight = 9.em,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontFamily = robotoMonoMedium),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (7).dp,
-                    y = (175).dp)
-                .requiredWidth(width = 87.dp)
-                .requiredHeight(height = 105.dp))
+                Text(
+                    text = "Quên mật khẩu?",
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontFamily = robotoMonoBold,
+                        color = Color.Black,
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    modifier = Modifier.clickable { /* Handle quên mật khẩu */ }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Căn giữa nút Đăng nhập
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    onClick = { /* Handle đăng nhập */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .height(50.dp),
+                    shape = RoundedCornerShape(30.dp)
+                ) {
+                    Text(
+                        text = "Đăng nhập",
+                        color = Color.White,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = robotoMonoMedium
+                        )
+                    )
+                }
+            }
+
+            // Căn giữa phần còn lại
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "Đăng nhập với",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = robotoMonoBold,
+                        color = Color.Black
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    IconButton(onClick = { /* Handle Facebook login */ }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.fb),
+                            contentDescription = "Facebook",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    IconButton(onClick = { /* Handle Google login */ }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.gg),
+                            contentDescription = "Google",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    IconButton(onClick = { /* Handle Apple login */ }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ap),
+                            contentDescription = "Apple",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Bạn chưa có tài khoản? ",
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            fontFamily = robotoMonoLight,
+                            color = Color.Black
+                        )
+                    )
+                    Text(
+                        text = "Đăng ký",
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            fontFamily = robotoMonoBold,
+                            color = Color(0xFF2106F3)
+                        ),
+                        modifier = Modifier.clickable { navController.navigate("AndroidCompact5") }
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
+private fun InputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    isPassword: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(text = label) },
+        modifier = modifier
+            .fillMaxWidth()
+            .height(52.dp),
+        singleLine = true,
+        shape = RoundedCornerShape(8.dp),
+        textStyle = TextStyle(fontSize = 14.sp),
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
+    )
+}
+
+@Composable
 fun AndroidCompact5(navController: NavHostController, modifier: Modifier = Modifier) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
-            .requiredWidth(width = 412.dp)
-            .requiredHeight(height = 917.dp)
-            .clip(shape = RoundedCornerShape(50.dp))
+            .fillMaxSize()
             .background(color = Color.White)
     ) {
+        // Logo
         Image(
             painter = painterResource(id = R.drawable.img_45),
-            contentDescription = "45",
+            contentDescription = "Logo",
             modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 10.5.dp,
-                    y = (-250.53125).dp)
-                .requiredWidth(width = 295.dp)
-                .requiredHeight(height = 166.dp)
+                .align(Alignment.TopCenter)
+                .padding(top = 50.dp)
+                .size(width = 295.dp, height = 166.dp)
         )
-        Text(
-            text = "Đăng ký",
-            color = Color.Black,
-            lineHeight = 9.em,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontFamily = robotoMonoMedium),
+
+        Column(
             modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-116).dp,
-                    y = (-144.5).dp))
-        Text(
-            lineHeight = 14.sp,
-            text = buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(
-                        color = Color.Black,
-                        fontSize = 10.sp,
-                        fontFamily = robotoMonoLight
+                .fillMaxSize()
+                .padding(top = 200.dp)
+                .padding(horizontal = 20.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Đăng ký",
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontFamily = robotoMonoMedium,
+                    color = Color.Black
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            InputField(
+                value = email,
+                onValueChange = { email = it },
+                label = "E-mail"
+            )
+            InputField(
+                value = password,
+                onValueChange = { password = it },
+                label = "Mật khẩu",
+                isPassword = true
+            )
+            InputField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = "Nhập lại mật khẩu",
+                isPassword = true
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp) // Thêm padding để căn chỉnh với checkbox
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Checkbox(
+                        checked = isChecked,
+                        onCheckedChange = { isChecked = it },
+                        colors = CheckboxDefaults.colors(Color.Black)
                     )
-                ) { append("     Tôi đồng ý với ") }
-            },
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = -100.dp, y = 63.5.dp)
-        )
-        Text(
-            lineHeight = 14.sp,
-            text = buildAnnotatedString {
-                withStyle(style = SpanStyle(
-                    color = Color.Black,
-                    fontSize = 10.sp,
-                    fontFamily = robotoMonoBold)) {append("điều khoản dịch vụ")}
-            },
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 12.dp, y = 63.5.dp)
-                .clickable {
-                    navController.navigate("AndroidCompact9")
-                }
-        )
-        Text(
-            lineHeight = 14.sp,
-            text = buildAnnotatedString {
-                withStyle(style = SpanStyle(
-                    color = Color.Black,
-                    fontSize = 10.sp,
-                    fontFamily = robotoMonoLight)) {append("và ")}
-            },
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = -50.dp, y = 75.5.dp)
-        )
-        Text(
-            lineHeight = 14.sp,
-            text = buildAnnotatedString {
-                withStyle(style = SpanStyle(
-                    color = Color.Black,
-                    fontSize = 10.sp,
-                    fontFamily = robotoMonoBold)) {append("chính sách bảo mật")}
-            },
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 12.dp, y = 75.5.dp)
-                .clickable {
-                    navController.navigate("AndroidCompact10")
-                }
-        )
-        Image(
-            painter = painterResource(
-                id = if (isChecked) R.drawable.squarechecksolid1 else R.drawable.squarechecksolid),
-            contentDescription = if (isChecked) "Checked" else "Unchecked",
-            colorFilter = ColorFilter.tint(if (isChecked) Color.Black else Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 55.dp, y = 516.dp)
-                .requiredSize(size = 12.dp)
-                .clickable {
-                    isChecked = !isChecked // Đổi trạng thái khi bấm
-                }
-        )
-        Text(
-            text = "Đăng nhập với",
-            color = Color.Black,
-            lineHeight = 14.4.em,
-            style = TextStyle(
-                fontSize = 10.sp,
-                fontFamily = robotoMonoBold),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 0.dp,
-                    y = 202.5.dp)
-                .wrapContentHeight(align = Alignment.CenterVertically))
-        Text(
-            lineHeight = 14.sp,
-            text = buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(
-                        color = Color.Black,
-                        fontSize = 10.sp,
-                        fontFamily = robotoMonoBold
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Tôi đồng ý với ",
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            fontFamily = robotoMonoLight,
+                            color = Color.Black
+                        )
                     )
-                ) { append("Bạn đã có tài khoản?       ") }
-            },
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-20).dp, y = 283.5.dp)
-                .wrapContentHeight(align = Alignment.CenterVertically)
-        )
-        Text(
-            text = "Đăng nhập",
-            color = Color(0xff2106f3),
-            fontSize = 10.sp,
-            fontFamily = robotoMonoBold,
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (60).dp, y = 283.5.dp)
-                .wrapContentHeight(align = Alignment.CenterVertically)
-                .clickable {
-                    navController.navigate("AndroidCompact4") // Chuyển sang AndroidCompact4
+                    Text(
+                        text = "điều khoản dịch vụ",
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            fontFamily = robotoMonoBold,
+                            color = Color.Blue
+                        ),
+                        modifier = Modifier.clickable { navController.navigate("AndroidCompact9") }
+                    )
                 }
-        )
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 3.5.dp,
-                    y = (-95.5).dp)
-                .requiredWidth(width = 309.dp)
-                .requiredHeight(height = 46.dp)
-                .clip(shape = RoundedCornerShape(30.dp))
-                .background(color = Color.White)
-                .border(border = BorderStroke(1.5.dp, Color.Black),
-                    shape = RoundedCornerShape(30.dp)))
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 0.dp,
-                    y = 139.5.dp)
-                .requiredWidth(width = 214.dp)
-                .requiredHeight(height = 46.dp)
-                .clip(shape = RoundedCornerShape(30.dp))
-                .background(color = Color.Black))
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 3.5.dp,
-                    y = (-32.5).dp)
-                .requiredWidth(width = 309.dp)
-                .requiredHeight(height = 46.dp)
-                .clip(shape = RoundedCornerShape(30.dp))
-                .background(color = Color.White)
-                .border(border = BorderStroke(1.5.dp, Color.Black),
-                    shape = RoundedCornerShape(30.dp)))
-        Box(
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 3.5.dp,
-                    y = 30.5.dp)
-                .requiredWidth(width = 309.dp)
-                .requiredHeight(height = 46.dp)
-                .clip(shape = RoundedCornerShape(30.dp))
-                .background(color = Color.White)
-                .border(border = BorderStroke(1.5.dp, Color.Black),
-                    shape = RoundedCornerShape(30.dp)))
-        Text(
-            text = "Đăng ký",
-            color = Color.White,
-            textAlign = TextAlign.Center,
-            lineHeight = 9.em,
-            style = TextStyle(
-                fontSize = 16.sp,
-                fontFamily = robotoMonoMedium),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = 0.dp,
-                    y = 139.5.dp)
-                .requiredWidth(width = 87.dp)
-                .requiredHeight(height = 144.dp)
-                .wrapContentHeight(align = Alignment.CenterVertically))
-        Image(
-            painter = painterResource(id = R.drawable.line1),
-            contentDescription = "Line 1",
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 163.dp,
-                    y = 647.5059204101562.dp)
-                .requiredWidth(width = 86.dp)
-                .border(border = BorderStroke(2.dp, Color.Black)))
-        Image(
-            painter = painterResource(id = R.drawable.fb),
-            contentDescription = "Frame",
-            colorFilter = ColorFilter.tint(Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 137.dp,
-                    y = 683.dp)
-                .requiredSize(size = 25.dp))
-        Image(
-            painter = painterResource(id = R.drawable.gg),
-            contentDescription = "Frame",
-            colorFilter = ColorFilter.tint(Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 192.dp,
-                    y = 683.dp)
-                .requiredWidth(width = 25.dp)
-                .requiredHeight(height = 26.dp))
-        Image(
-            painter = painterResource(id = R.drawable.ap),
-            contentDescription = "Frame",
-            colorFilter = ColorFilter.tint(Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 249.dp,
-                    y = 676.dp)
-                .requiredWidth(width = 25.dp)
-                .requiredHeight(height = 33.dp))
-        Image(
-            painter = painterResource(id = R.drawable.vector),
-            contentDescription = "Frame",
-            colorFilter = ColorFilter.tint(Color.Black),
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 50.dp,
-                    y = 110.dp)
-                .requiredWidth(width = 10.dp)
-                .requiredHeight(height = 16.dp)
-                .clickable {
-                    navController.navigate("AndroidCompact4") // Chuyển sang AndroidCompact4
+
+                Row(
+                    modifier = Modifier.padding(start = 110.dp)
+                ) {
+                    Text(
+                        text = "cùng ",
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            fontFamily = robotoMonoLight,
+                            color = Color.Black
+                        )
+                    )
+                    Text(
+                        text = "chính sách bảo mật",
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            fontFamily = robotoMonoBold,
+                            color = Color.Blue
+                        ),
+                        modifier = Modifier.clickable { navController.navigate("AndroidCompact10") }
+                    )
                 }
-        )
-        Spacer(
-            modifier = Modifier
-                .align(alignment = Alignment.TopStart)
-                .offset(x = 334.dp,
-                    y = 257.dp)
-                .requiredSize(size = 100.dp))
-        Text(
-            text = "E-mail",
-            color = Color.Black,
-            lineHeight = 10.29.em,
-            style = TextStyle(
-                fontSize = 10.sp,
-                fontFamily = robotoMonoLight),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-92).dp,
-                    y = (-31.5).dp)
-                .requiredWidth(width = 76.dp)
-                .requiredHeight(height = 144.dp))
-        Text(
-            text = "Mật khẩu",
-            color = Color.Black,
-            lineHeight = 10.29.em,
-            style = TextStyle(
-                fontSize = 10.sp,
-                fontFamily = robotoMonoLight),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-91).dp,
-                    y = (31.5).dp)
-                .requiredWidth(width = 76.dp)
-                .requiredHeight(height = 144.dp))
-        Text(
-            text = "Nhập lại mật khẩu",
-            color = Color.Black,
-            lineHeight = 10.29.em,
-            style = TextStyle(
-                fontSize = 10.sp,
-                fontFamily = robotoMonoLight),
-            modifier = Modifier
-                .align(alignment = Alignment.Center)
-                .offset(x = (-50).dp,
-                    y = 77.dp)
-                .requiredWidth(width = 158.dp)
-                .requiredHeight(height = 109.dp))
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Căn giữa nút Đăng ký
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    onClick = { /* Handle đăng ký */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .height(50.dp)
+                ) {
+                    Text(
+                        text = "Đăng ký",
+                        color = Color.White,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = robotoMonoMedium
+                        )
+                    )
+                }
+            }
+
+            // Căn giữa phần còn lại
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = "Đăng nhập với",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = robotoMonoBold,
+                        color = Color.Black
+                    )
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    IconButton(onClick = { /* Handle Facebook login */ }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.fb),
+                            contentDescription = "Facebook",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    IconButton(onClick = { /* Handle Google login */ }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.gg),
+                            contentDescription = "Google",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                    IconButton(onClick = { /* Handle Apple login */ }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ap),
+                            contentDescription = "Apple",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Bạn đã có tài khoản? ",
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            fontFamily = robotoMonoLight,
+                            color = Color.Black
+                        )
+                    )
+                    Text(
+                        text = "Đăng nhập",
+                        style = TextStyle(
+                            fontSize = 10.sp,
+                            fontFamily = robotoMonoBold,
+                            color = Color.Blue
+                        ),
+                        modifier = Modifier.clickable { navController.navigate("AndroidCompact4") }
+                    )
+                }
+            }
+        }
     }
 }
 
+@Composable
+fun InputField(label: String, modifier: Modifier = Modifier) {
+    OutlinedTextField(
+        value = "",
+        onValueChange = { /* Handle input */ },
+        label = { Text(text = label) },
+        modifier = modifier
+            .fillMaxWidth()
+            .height(52.dp),
+        singleLine = true,
+        shape = RoundedCornerShape(8.dp),
+        textStyle = TextStyle(fontSize = 14.sp)
+    )
+}
 @Composable
 fun AndroidCompact9(navController: NavHostController, modifier: Modifier = Modifier) {
     Box(

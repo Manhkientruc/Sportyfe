@@ -102,6 +102,7 @@ fun AppNavigation(navController: NavHostController) {
         composable("AndroidCompact3") { AndroidCompact3(navController) }
         composable("AndroidCompact4") { AndroidCompact4(navController) }
         composable("AndroidCompact5") { AndroidCompact5(navController) }
+        composable("AndroidCompact6") { AndroidCompact6(navController) }
         composable("AndroidCompact8") { AndroidCompact8(navController) }
         composable("AndroidCompact9") { AndroidCompact9(navController) }
         composable("AndroidCompact10") { AndroidCompact10(navController) }
@@ -428,7 +429,7 @@ fun AndroidCompact4(navController: NavHostController, modifier: Modifier = Modif
                         color = Color.Black,
                         textDecoration = TextDecoration.Underline
                     ),
-                    modifier = Modifier.clickable { /* Handle quên mật khẩu */ }
+                    modifier = Modifier.clickable { navController.navigate("AndroidCompact6") }
                 )
             }
 
@@ -770,6 +771,137 @@ fun InputField(label: String, modifier: Modifier = Modifier) {
     OutlinedTextField(
         value = "",
         onValueChange = { /* Handle input */ },
+        label = { Text(text = label) },
+        modifier = modifier
+            .fillMaxWidth()
+            .height(52.dp),
+        singleLine = true,
+        shape = RoundedCornerShape(8.dp),
+        textStyle = TextStyle(fontSize = 14.sp)
+    )
+}@Composable
+fun AndroidCompact6(navController: NavHostController, modifier: Modifier = Modifier) {
+    var email by remember { mutableStateOf("") }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
+        // Logo
+        Image(
+            painter = painterResource(id = R.drawable.img_45),
+            contentDescription = "Logo",
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 50.dp)
+                .size(width = 295.dp, height = 166.dp)
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 230.dp)
+                .padding(horizontal = 20.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Quên mật khẩu",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    fontFamily = robotoMonoMedium,
+                    color = Color.Black
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Vui lòng nhập email của bạn để nhận hướng dẫn đặt lại mật khẩu",
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontFamily = robotoMonoLight,
+                    color = Color.Black
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            InputField(
+                value = email,
+                onValueChange = { email = it },
+                label = "E-mail"
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Nút Gửi yêu cầu
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    onClick = { /* Handle gửi yêu cầu */ },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .height(50.dp),
+                    shape = RoundedCornerShape(30.dp)
+                ) {
+                    Text(
+                        text = "Gửi yêu cầu",
+                        color = Color.White,
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontFamily = robotoMonoMedium
+                        )
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Quay lại đăng nhập
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Quay lại ",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = robotoMonoLight,
+                        color = Color.Black
+                    )
+                )
+                Text(
+                    text = "Đăng nhập",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = robotoMonoBold,
+                        color = Color(0xFF2106F3)
+                    ),
+                    modifier = Modifier.clickable { navController.navigateUp() }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun InputField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
         label = { Text(text = label) },
         modifier = modifier
             .fillMaxWidth()
@@ -6133,6 +6265,13 @@ private fun AndroidCompact4Preview() {
 private fun AndroidCompact5Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact5(navController = previewNavController, Modifier)
+}
+
+@Preview(widthDp = 412, heightDp = 917)
+@Composable
+private fun AndroidCompact6Preview() {
+    val previewNavController = rememberNavController()
+    AndroidCompact6(navController = previewNavController, Modifier)
 }
 
 @Preview(widthDp = 412, heightDp = 917)

@@ -74,6 +74,9 @@ import android.util.Log
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
@@ -96,7 +99,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "AndroidCompact5") {
+    NavHost(navController = navController, startDestination = "AndroidCompact4") {
         composable("AndroidCompact1") { AndroidCompact1(navController) }
         composable("AndroidCompact2") { AndroidCompact2(navController) }
         composable("AndroidCompact3") { AndroidCompact3(navController) }
@@ -348,6 +351,10 @@ fun AndroidCompact4(navController: NavHostController, modifier: Modifier = Modif
     var password by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    val database = FirebaseDatabase.getInstance().reference
+    val auth = FirebaseAuth.getInstance()
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -441,7 +448,75 @@ fun AndroidCompact4(navController: NavHostController, modifier: Modifier = Modif
                 contentAlignment = Alignment.Center
             ) {
                 Button(
-                    onClick = { /* Handle đăng nhập */ },
+                    onClick = {
+                        if (email.isNotEmpty() && password.isNotEmpty()) {
+                            auth.signInWithEmailAndPassword(email, password)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        // Lấy ID của user hiện tại
+                                        val userId = auth.currentUser?.uid
+
+                                        // Kiểm tra thông tin user trong database
+                                        database.child("users").child(userId ?: "")
+                                            .addListenerForSingleValueEvent(object : ValueEventListener {
+                                                override fun onDataChange(snapshot: DataSnapshot) {
+                                                    if (snapshot.exists()) {
+                                                        // User đã tồn tại trong database
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Đăng nhập thành công!",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                        navController.navigate("AndroidCompact32")
+                                                    } else {
+                                                        // Tạo user mới trong database
+                                                        val userData = mapOf(
+                                                            "email" to email,
+                                                            "password" to password  // Lưu ý: Trong thực tế không nên lưu password trực tiếp
+                                                        )
+                                                        database.child("users").child(userId ?: "").setValue(userData)
+                                                            .addOnSuccessListener {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Đăng nhập thành công!",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                                navController.navigate("AndroidCompact32")
+                                                            }
+                                                            .addOnFailureListener { e ->
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    "Lỗi: ${e.message}",
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            }
+                                                    }
+                                                }
+
+                                                override fun onCancelled(error: DatabaseError) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        "Lỗi database: ${error.message}",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            })
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            "Đăng nhập thất bại: ${task.exception?.message}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Vui lòng điền đầy đủ thông tin",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
@@ -553,6 +628,7 @@ private fun InputField(
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
     )
 }
+
 
 @Composable
 fun AndroidCompact5(navController: NavHostController, modifier: Modifier = Modifier) {

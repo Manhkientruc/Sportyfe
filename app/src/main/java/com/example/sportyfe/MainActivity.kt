@@ -629,9 +629,9 @@ private fun InputField(
     )
 }
 
-
 @Composable
 fun AndroidCompact5(navController: NavHostController, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
@@ -672,18 +672,18 @@ fun AndroidCompact5(navController: NavHostController, modifier: Modifier = Modif
 
             Spacer(modifier = Modifier.height(5.dp))
 
-            InputField(
+            InputField5(
                 value = email,
                 onValueChange = { email = it },
                 label = "E-mail"
             )
-            InputField(
+            InputField5(
                 value = password,
                 onValueChange = { password = it },
                 label = "Mật khẩu",
                 isPassword = true
             )
-            InputField(
+            InputField5(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 label = "Nhập lại mật khẩu",
@@ -754,7 +754,73 @@ fun AndroidCompact5(navController: NavHostController, modifier: Modifier = Modif
                 contentAlignment = Alignment.Center
             ) {
                 Button(
-                    onClick = { /* Handle đăng ký */ },
+                    onClick = {
+                        if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()) {
+                            if (password == confirmPassword) {
+                                if (isChecked) {
+                                    val auth = FirebaseAuth.getInstance()
+                                    val database = FirebaseDatabase.getInstance().reference
+
+                                    auth.createUserWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                // Tạo tài khoản thành công
+                                                val userId = auth.currentUser?.uid
+
+                                                // Lưu thêm thông tin vào database (nếu cần)
+                                                val userData = mapOf(
+                                                    "email" to email,
+                                                    "uid" to userId
+                                                )
+
+                                                database.child("users").child(userId ?: "").setValue(userData)
+                                                    .addOnSuccessListener {
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Đăng ký thành công!",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+
+                                                        // Điều hướng sang màn hình khác
+                                                        navController.navigate("AndroidCompact32")
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Lỗi lưu dữ liệu: ${e.message}",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    "Đăng ký thất bại: ${task.exception?.message}",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                        }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Bạn cần đồng ý với điều khoản dịch vụ và chính sách bảo mật.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Mật khẩu và xác nhận mật khẩu không khớp.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Vui lòng điền đầy đủ thông tin.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
@@ -843,19 +909,28 @@ fun AndroidCompact5(navController: NavHostController, modifier: Modifier = Modif
 }
 
 @Composable
-fun InputField(label: String, modifier: Modifier = Modifier) {
+fun InputField5(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    isPassword: Boolean = false,
+    modifier: Modifier = Modifier
+) {
     OutlinedTextField(
-        value = "",
-        onValueChange = { /* Handle input */ },
+        value = value,
+        onValueChange = onValueChange,
         label = { Text(text = label) },
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp),
         singleLine = true,
         shape = RoundedCornerShape(8.dp),
-        textStyle = TextStyle(fontSize = 14.sp)
+        textStyle = TextStyle(fontSize = 14.sp),
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
     )
-}@Composable
+}
+
+@Composable
 fun AndroidCompact6(navController: NavHostController, modifier: Modifier = Modifier) {
     var email by remember { mutableStateOf("") }
 

@@ -77,6 +77,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
@@ -95,11 +98,11 @@ class MainActivity : ComponentActivity() {
             AppNavigation(navController)
         }
     }
-}
+} //MainActivity không có cái này thì nghỉ, khỏi chạy :)))
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "AndroidCompact4") {
+    NavHost(navController = navController, startDestination = "AndroidCompact1") {
         composable("AndroidCompact1") { AndroidCompact1(navController) }
         composable("AndroidCompact2") { AndroidCompact2(navController) }
         composable("AndroidCompact3") { AndroidCompact3(navController) }
@@ -148,10 +151,13 @@ fun AppNavigation(navController: NavHostController) {
     }
 }
 data class Product(
+    val id: String = "", // Thêm id để track sản phẩm
     val image: Int = 0,
     val price: Long = 0,
-    val tittle: String = ""
-)
+    val tittle: String = "",
+    var isFavorite: Boolean = false
+) //cái này chi tiết sản phẩm từ cơ sở dữ liệu
+
 private val imageMap = mapOf(
     821 to R.drawable.img_821,
     822 to R.drawable.img_822,
@@ -243,7 +249,224 @@ private val imageMap = mapOf(
     184 to R.drawable.ig_184,
     185 to R.drawable.ig_185,
     186 to R.drawable.ig_186
-)
+) //cái này là hình ảnh từ cơ sở dữ liệu
+
+@Composable
+fun BottomIcon(iconRes: Int, label: String, onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable { onClick() }
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = label,
+            modifier = Modifier.size(24.dp)
+        )
+        Text(text = label, style = MaterialTheme.typography.bodySmall)
+    }
+}
+fun Long.formatPrice(): String {
+    return "đ ${String.format("%,d", this)}"  // Sẽ format: đ 1,500,000
+    // Hoặc
+    // return "đ ${DecimalFormat("#,###").format(this)}"  // Sẽ format: đ 1.500.000
+}
+@Composable
+fun ProductCard(
+    product: Product,
+    viewModel: ProductViewModel,
+    imageResId: Int,
+    price: Long,
+    tittle: String,
+    badgeText: String? = null,
+    badgeColor: Color = Color.Black,
+) {
+    Card(
+        modifier = Modifier
+            .padding(5.dp)
+            .width(160.dp)
+            .height(200.dp),
+        elevation = CardDefaults.cardElevation(4.dp),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Badge hiển thị nếu có
+            badgeText?.let {
+                Box(
+                    modifier = Modifier
+                        .background(badgeColor, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .align(Alignment.Start)
+                ) {
+                    Text(
+                        text = it,
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        fontFamily = robotoMonoBold
+                    )
+                }
+            }
+
+            // Hình ảnh sản phẩm
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1.5f)
+                    .clip(RoundedCornerShape(8.dp))
+            ) {
+                Image(
+                    painter = painterResource(id = imageResId),
+                    contentDescription = tittle,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            // Giá sản phẩm
+            Text(
+                text = price.formatPrice(),  // Format price khi hiển thị
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = robotoMonoMedium,
+                    fontSize = 12.sp
+                ),
+                color = Color.Black,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+            )
+
+            // Tên sản phẩm
+            Text(
+                text = tittle,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontFamily = robotoMonoRegular,
+                    fontSize = 10.sp
+                ),
+                color = Color.Gray,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 2.dp)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Hàng chứa nút tương tác
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    painter = painterResource(
+                        id = if (product.isFavorite) R.drawable.heart_filled else R.drawable.heart
+                    ),
+                    contentDescription = "Favorite",
+                    tint = if (product.isFavorite) Color.Red else Color.Unspecified,
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clickable { viewModel.toggleFavorite(product) }
+                        .padding(4.dp)
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.shoppingbag),
+                    contentDescription = "Add to Cart",
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clickable { viewModel.addToCart(product) }
+                        .padding(4.dp)
+                )
+            }
+        }
+    }
+}
+
+class ProductViewModel : ViewModel() {
+    private val database = FirebaseDatabase.getInstance().reference
+    private val _products = mutableStateListOf<Product>()
+    val products: List<Product> = _products
+
+    private val _favoriteProducts = mutableStateListOf<Product>()
+    val favoriteProducts: List<Product> = _favoriteProducts
+
+    init {
+        loadProducts()
+        loadFavorites()
+    }
+
+    private fun loadProducts() {
+        database.child("products").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val newProducts = mutableListOf<Product>()
+                for (productSnapshot in snapshot.children) {
+                    val product = productSnapshot.getValue(Product::class.java)
+                    product?.let {
+                        // Gán id từ key của Firebase
+                        newProducts.add(it.copy(id = productSnapshot.key ?: ""))
+                    }
+                }
+                _products.clear()
+                _products.addAll(newProducts)
+                // Cập nhật trạng thái favorite
+                updateFavoriteStatus()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Xử lý lỗi
+            }
+        })
+    }
+
+    private fun loadFavorites() {
+        // Giả sử ta lưu favorites trong node "favorites" của user hiện tại
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        database.child("users").child(userId).child("favorites")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val favoriteIds = snapshot.children.mapNotNull { it.key }
+                    _favoriteProducts.clear()
+                    _favoriteProducts.addAll(_products.filter { it.id in favoriteIds })
+                    updateFavoriteStatus()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Xử lý lỗi
+                }
+            })
+    }
+
+    private fun updateFavoriteStatus() {
+        _products.forEach { product ->
+            product.isFavorite = _favoriteProducts.any { it.id == product.id }
+        }
+    }
+
+    fun toggleFavorite(product: Product) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val favoriteRef = database.child("users").child(userId)
+            .child("favorites").child(product.id)
+
+        if (product.isFavorite) {
+            // Xóa khỏi favorites
+            favoriteRef.removeValue()
+        } else {
+            // Thêm vào favorites
+            favoriteRef.setValue(true)
+        }
+    }
+    fun addToCart(product: Product) {
+        // Logic thêm sản phẩm vào giỏ hàng
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        database.child("users").child(userId).child("cart").child(product.id.toString())
+            .setValue(true)
+    }
+}
+
 @Composable
 fun AndroidCompact1(navController: NavHostController, modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
@@ -606,15 +829,8 @@ fun AndroidCompact4(navController: NavHostController, modifier: Modifier = Modif
         }
     }
 }
-
 @Composable
-private fun InputField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    isPassword: Boolean = false,
-    modifier: Modifier = Modifier
-) {
+private fun InputField(value: String, onValueChange: (String) -> Unit, label: String, isPassword: Boolean = false, modifier: Modifier = Modifier) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -623,7 +839,7 @@ private fun InputField(
             .fillMaxWidth()
             .height(52.dp),
         singleLine = true,
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(20.dp),
         textStyle = TextStyle(fontSize = 14.sp),
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
     )
@@ -907,15 +1123,8 @@ fun AndroidCompact5(navController: NavHostController, modifier: Modifier = Modif
         }
     }
 }
-
 @Composable
-fun InputField5(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    isPassword: Boolean = false,
-    modifier: Modifier = Modifier
-) {
+fun InputField5(value: String, onValueChange: (String) -> Unit, label: String, isPassword: Boolean = false, modifier: Modifier = Modifier) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -1042,14 +1251,8 @@ fun AndroidCompact6(navController: NavHostController, modifier: Modifier = Modif
         }
     }
 }
-
 @Composable
-private fun InputField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier
-) {
+private fun InputField(value: String, onValueChange: (String) -> Unit, label: String, modifier: Modifier = Modifier) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -1062,6 +1265,7 @@ private fun InputField(
         textStyle = TextStyle(fontSize = 14.sp)
     )
 }
+
 @Composable
 fun AndroidCompact9(navController: NavHostController, modifier: Modifier = Modifier) {
     Box(
@@ -1275,6 +1479,7 @@ fun AndroidCompact10(navController: NavHostController, modifier: Modifier = Modi
                     y = 110.dp))
     }
 }
+
 @Composable
 fun AndroidCompact11(navController: NavHostController, modifier: Modifier = Modifier) {
     Box(
@@ -1489,19 +1694,19 @@ fun BottomBar2(navController: NavHostController){
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
-        BottomIcon(R.drawable.home_light, "Home") {
+        BottomIcon(R.drawable.home_light, "") {
             navController.navigate("AndroidCompact32")
         }
-        BottomIcon(R.drawable.search, "Search") {
+        BottomIcon(R.drawable.search, "") {
             navController.navigate("AndroidCompact13")
         }
-        BottomIcon(R.drawable.heart, "Favorites") {
+        BottomIcon(R.drawable.heart, "") {
             navController.navigate("AndroidCompact36")
         }
-        BottomIcon(R.drawable.shoppingbag, "Cart") {
+        BottomIcon(R.drawable.shoppingbag, "") {
             navController.navigate("AndroidCompact16")
         }
-        BottomIcon(R.drawable.person, "Profile") {
+        BottomIcon(R.drawable.person, "") {
             navController.navigate("AndroidCompact24")
         }
     }
@@ -1519,19 +1724,19 @@ fun BottomBar3(navController: NavHostController){
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
-        BottomIcon(R.drawable.home_light, "Home") {
+        BottomIcon(R.drawable.home_light, "") {
             navController.navigate("AndroidCompact32")
         }
-        BottomIcon(R.drawable.magnifier, "Search") {
+        BottomIcon(R.drawable.magnifier, "") {
             navController.navigate("AndroidCompact13")
         }
-        BottomIcon(R.drawable.heart_bold, "Favorites") {
+        BottomIcon(R.drawable.heart_filled, "") {
             navController.navigate("AndroidCompact36")
         }
-        BottomIcon(R.drawable.shoppingbag, "Cart") {
+        BottomIcon(R.drawable.shoppingbag, "") {
             navController.navigate("AndroidCompact16")
         }
-        BottomIcon(R.drawable.person, "Profile") {
+        BottomIcon(R.drawable.person, "") {
             navController.navigate("AndroidCompact24")
         }
     }
@@ -1549,19 +1754,19 @@ fun BottomBar4(navController: NavHostController){
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
-        BottomIcon(R.drawable.home_light, "Home") {
+        BottomIcon(R.drawable.home_light, "") {
             navController.navigate("AndroidCompact32")
         }
-        BottomIcon(R.drawable.magnifier, "Search") {
+        BottomIcon(R.drawable.magnifier, "") {
             navController.navigate("AndroidCompact13")
         }
-        BottomIcon(R.drawable.heart, "Favorites") {
+        BottomIcon(R.drawable.heart, "") {
             navController.navigate("AndroidCompact36")
         }
-        BottomIcon(R.drawable.shoppingbag_bold, "Cart") {
+        BottomIcon(R.drawable.shoppingbag_bold, "") {
             navController.navigate("AndroidCompact16")
         }
-        BottomIcon(R.drawable.person, "Profile") {
+        BottomIcon(R.drawable.person, "") {
             navController.navigate("AndroidCompact24")
         }
     }
@@ -1579,19 +1784,19 @@ fun BottomBar5(navController: NavHostController){
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Các icon trang chủ, tìm kiếm, yêu thích, giỏ hàng, cá nhân
-        BottomIcon(R.drawable.home_light, "Home") {
+        BottomIcon(R.drawable.home_light, "") {
             navController.navigate("AndroidCompact32")
         }
-        BottomIcon(R.drawable.magnifier, "Search") {
+        BottomIcon(R.drawable.magnifier, "") {
             navController.navigate("AndroidCompact13")
         }
-        BottomIcon(R.drawable.heart, "Favorites") {
+        BottomIcon(R.drawable.heart, "") {
             navController.navigate("AndroidCompact36")
         }
-        BottomIcon(R.drawable.shoppingbag, "Cart") {
+        BottomIcon(R.drawable.shoppingbag, "") {
             navController.navigate("AndroidCompact16")
         }
-        BottomIcon(R.drawable.person_bold, "Profile") {
+        BottomIcon(R.drawable.person_bold, "") {
             navController.navigate("AndroidCompact24")
         }
     }
@@ -1599,6 +1804,7 @@ fun BottomBar5(navController: NavHostController){
 
 @Composable
 fun AndroidCompact32(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -1700,6 +1906,8 @@ fun AndroidCompact32(navController: NavHostController) {
                         items(products.value.size) { index ->
                             val product = products.value[index]
                             ProductCard(
+                                product = product,
+                                viewModel = viewModel,
                                 imageResId = product.image,
                                 price = product.price,
                                 tittle = product.tittle,
@@ -1715,136 +1923,8 @@ fun AndroidCompact32(navController: NavHostController) {
 }
 
 @Composable
-fun BottomIcon(iconRes: Int, label: String, onClick: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { onClick() }
-    ) {
-        Icon(
-            painter = painterResource(id = iconRes),
-            contentDescription = label,
-            modifier = Modifier.size(24.dp)
-        )
-        Text(text = label, style = MaterialTheme.typography.bodySmall)
-    }
-}
-fun Long.formatPrice(): String {
-    return "đ ${String.format("%,d", this)}"  // Sẽ format: đ 1,500,000
-    // Hoặc
-    // return "đ ${DecimalFormat("#,###").format(this)}"  // Sẽ format: đ 1.500.000
-}
-@Composable
-fun ProductCard(
-    imageResId: Int,
-    price: Long,  // Thay đổi kiểu dữ liệu
-    tittle: String,
-    badgeText: String? = null,
-    badgeColor: Color = Color.Black,
-    onAddToCart: () -> Unit = {},
-    onFavorite: () -> Unit = {}
-) {
-    Card(
-        modifier = Modifier
-            .padding(5.dp)
-            .width(160.dp)
-            .height(200.dp),
-        elevation = CardDefaults.cardElevation(4.dp),
-        shape = RoundedCornerShape(10.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Badge hiển thị nếu có
-            badgeText?.let {
-                Box(
-                    modifier = Modifier
-                        .background(badgeColor, RoundedCornerShape(8.dp))
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                        .align(Alignment.Start)
-                ) {
-                    Text(
-                        text = it,
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        fontFamily = robotoMonoBold
-                    )
-                }
-            }
-
-            // Hình ảnh sản phẩm
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1.5f)
-                    .clip(RoundedCornerShape(8.dp))
-            ) {
-                Image(
-                    painter = painterResource(id = imageResId),
-                    contentDescription = tittle,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-
-            // Giá sản phẩm
-            Text(
-                text = price.formatPrice(),  // Format price khi hiển thị
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontFamily = robotoMonoMedium,
-                    fontSize = 12.sp
-                ),
-                color = Color.Black,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp)
-            )
-
-            // Tên sản phẩm
-            Text(
-                text = tittle,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontFamily = robotoMonoRegular,
-                    fontSize = 10.sp
-                ),
-                color = Color.Gray,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 2.dp)
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Hàng chứa nút tương tác
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.heart),
-                    contentDescription = "Favorite",
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clickable { onFavorite() }
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.shoppingbag),
-                    contentDescription = "Add to Cart",
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clickable { onAddToCart() }
-                )
-            }
-        }
-    }
-}
-@Composable
 fun AndroidCompact32_2(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -1951,7 +2031,9 @@ fun AndroidCompact32_2(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 badgeText = "🔥",
-                                badgeColor = Color(0xCBFFC0CB)
+                                badgeColor = Color(0xCBFFC0CB),
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -2062,6 +2144,7 @@ fun AndroidCompact32_3(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact59(navController: NavHostController) {
     Scaffold(
@@ -2270,8 +2353,10 @@ fun AndroidCompact59(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact60(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -2365,7 +2450,9 @@ fun AndroidCompact60(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -2374,8 +2461,10 @@ fun AndroidCompact60(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact94(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -2470,7 +2559,9 @@ fun AndroidCompact94(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -2482,6 +2573,7 @@ fun AndroidCompact94(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact67(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -2576,7 +2668,9 @@ fun AndroidCompact67(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -2585,8 +2679,10 @@ fun AndroidCompact67(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact68(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -2708,7 +2804,9 @@ fun AndroidCompact68(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -2717,8 +2815,10 @@ fun AndroidCompact68(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact69(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -2813,7 +2913,9 @@ fun AndroidCompact69(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -2822,8 +2924,10 @@ fun AndroidCompact69(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact70(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -2918,7 +3022,9 @@ fun AndroidCompact70(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -2927,6 +3033,7 @@ fun AndroidCompact70(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact71(navController: NavHostController) {
     Scaffold(
@@ -3135,6 +3242,7 @@ fun AndroidCompact71(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact32_4(navController: NavHostController) {
     Scaffold(
@@ -3235,6 +3343,7 @@ fun AndroidCompact32_4(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact42(navController: NavHostController) {
     Scaffold(
@@ -3443,6 +3552,7 @@ fun AndroidCompact42(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact46(navController: NavHostController) {
     Scaffold(
@@ -3651,6 +3761,7 @@ fun AndroidCompact46(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact36(navController: NavHostController, modifier: Modifier = Modifier) {
     Scaffold(
@@ -4346,6 +4457,7 @@ fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modi
 
 @Composable
 fun AndroidCompact40(navController: NavHostController, modifier: Modifier = Modifier) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -4440,7 +4552,9 @@ fun AndroidCompact40(navController: NavHostController, modifier: Modifier = Modi
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -4451,6 +4565,7 @@ fun AndroidCompact40(navController: NavHostController, modifier: Modifier = Modi
 }
 @Composable
 fun AndroidCompact58(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -4557,7 +4672,9 @@ fun AndroidCompact58(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -4569,6 +4686,7 @@ fun AndroidCompact58(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact57(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -4675,7 +4793,9 @@ fun AndroidCompact57(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -4687,6 +4807,7 @@ fun AndroidCompact57(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact56(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -4793,7 +4914,9 @@ fun AndroidCompact56(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -4805,6 +4928,7 @@ fun AndroidCompact56(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact55(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -4911,7 +5035,9 @@ fun AndroidCompact55(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -4920,8 +5046,10 @@ fun AndroidCompact55(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact54(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -5028,7 +5156,9 @@ fun AndroidCompact54(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -5040,6 +5170,7 @@ fun AndroidCompact54(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact53(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -5146,7 +5277,9 @@ fun AndroidCompact53(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -5155,8 +5288,10 @@ fun AndroidCompact53(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact51(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -5263,7 +5398,9 @@ fun AndroidCompact51(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -5275,6 +5412,7 @@ fun AndroidCompact51(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact50(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -5381,7 +5519,9 @@ fun AndroidCompact50(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -5390,8 +5530,10 @@ fun AndroidCompact50(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact48(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -5498,7 +5640,9 @@ fun AndroidCompact48(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -5507,8 +5651,10 @@ fun AndroidCompact48(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact49(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -5615,7 +5761,9 @@ fun AndroidCompact49(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -5624,8 +5772,10 @@ fun AndroidCompact49(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact47(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -5732,7 +5882,9 @@ fun AndroidCompact47(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -5741,8 +5893,10 @@ fun AndroidCompact47(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact61(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -5837,7 +5991,9 @@ fun AndroidCompact61(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -5846,8 +6002,10 @@ fun AndroidCompact61(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact62(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -5942,7 +6100,9 @@ fun AndroidCompact62(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -5951,8 +6111,10 @@ fun AndroidCompact62(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact63(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -6047,7 +6209,9 @@ fun AndroidCompact63(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -6056,8 +6220,10 @@ fun AndroidCompact63(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact64(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -6152,7 +6318,9 @@ fun AndroidCompact64(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -6161,8 +6329,10 @@ fun AndroidCompact64(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun AndroidCompact65(navController: NavHostController) {
+    val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -6257,7 +6427,9 @@ fun AndroidCompact65(navController: NavHostController) {
                             ProductCard(
                                 imageResId = product.image,
                                 price = product.price,
-                                tittle = product.tittle
+                                tittle = product.tittle,
+                                product = product,
+                                viewModel = viewModel
                             )
                         }
                     }
@@ -6266,43 +6438,48 @@ fun AndroidCompact65(navController: NavHostController) {
         }
     }
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact65Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact65(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact64Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact64(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact63Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact63(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact62Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact62(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact61Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact61(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact47Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact47(navController = previewNavController)
 }
-
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
@@ -6325,7 +6502,6 @@ private fun AndroidCompact50Preview() {
     AndroidCompact50(navController = previewNavController)
 }
 
-
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact51Preview() {
@@ -6340,14 +6516,12 @@ private fun AndroidCompact53Preview() {
     AndroidCompact53(navController = previewNavController)
 }
 
-
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact54Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact54(navController = previewNavController)
 }
-
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
@@ -6356,7 +6530,6 @@ private fun AndroidCompact55Preview() {
     AndroidCompact55(navController = previewNavController)
 }
 
-
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact56Preview() {
@@ -6364,14 +6537,12 @@ private fun AndroidCompact56Preview() {
     AndroidCompact56(navController = previewNavController)
 }
 
-
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact57Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact57(navController = previewNavController)
 }
-
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
@@ -6543,36 +6714,42 @@ private fun AndroidCompact46Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact46(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact60Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact60(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact67Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact67(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact68Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact68(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact69Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact69(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact70Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact70(navController = previewNavController)
 }
+
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
 private fun AndroidCompact94Preview() {

@@ -80,6 +80,8 @@ import com.google.firebase.auth.FirebaseAuth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.activity.viewModels
+import androidx.navigation.NavController
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
@@ -91,18 +93,20 @@ val robotoMonoLight = FontFamily(Font(R.font.robotomono_light))
 
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: ProductViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            AppNavigation(navController)
+            AppNavigation(navController, viewModel)
         }
     }
 } //MainActivity không có cái này thì nghỉ, khỏi chạy :)))
 
 @Composable
-fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "AndroidCompact1") {
+fun AppNavigation(navController: NavHostController, viewModel: ProductViewModel) {
+    NavHost(navController = navController, startDestination = "AndroidCompact36") {
         composable("AndroidCompact1") { AndroidCompact1(navController) }
         composable("AndroidCompact2") { AndroidCompact2(navController) }
         composable("AndroidCompact3") { AndroidCompact3(navController) }
@@ -120,7 +124,9 @@ fun AppNavigation(navController: NavHostController) {
         composable("AndroidCompact32_2") { AndroidCompact32_2(navController) }
         composable("AndroidCompact32_3") { AndroidCompact32_3(navController) }
         composable("AndroidCompact32_4") { AndroidCompact32_4(navController) }
-        composable("AndroidCompact36") { AndroidCompact36(navController) }
+        composable("AndroidCompact36") {
+            AndroidCompact36(navController, viewModel)
+        }
         composable("AndroidCompact40") { AndroidCompact40(navController) }
         composable("AndroidCompact42") { AndroidCompact42(navController) }
         composable("AndroidCompact46") { AndroidCompact46(navController) }
@@ -159,14 +165,14 @@ data class Product(
 ) //cái này chi tiết sản phẩm từ cơ sở dữ liệu
 
 private val imageMap = mapOf(
-    821 to R.drawable.img_821,
+/*    821 to R.drawable.img_821,
     822 to R.drawable.img_822,
     823 to R.drawable.img_823,
-    100 to R.drawable.ig_100,
+    100 to R.drawable.ig_100,*/
     101 to R.drawable.ig_101,
     102 to R.drawable.ig_102,
     103 to R.drawable.ig_103,
-    104 to R.drawable.ig_104,
+    /*104 to R.drawable.ig_104,
     105 to R.drawable.ig_105,
     106 to R.drawable.ig_106,
     107 to R.drawable.ig_107,
@@ -248,7 +254,7 @@ private val imageMap = mapOf(
     183 to R.drawable.ig_183,
     184 to R.drawable.ig_184,
     185 to R.drawable.ig_185,
-    186 to R.drawable.ig_186
+    186 to R.drawable.ig_186*/
 ) //cái này là hình ảnh từ cơ sở dữ liệu
 
 @Composable
@@ -279,6 +285,7 @@ fun ProductCard(
     tittle: String,
     badgeText: String? = null,
     badgeColor: Color = Color.Black,
+    navController: NavController
 ) {
     Card(
         modifier = Modifier
@@ -364,17 +371,19 @@ fun ProductCard(
             ) {
                 Icon(
                     painter = painterResource(
-                        id = if (product.isFavorite) R.drawable.heart_filled else R.drawable.heart
+                        id = if (product.isFavorite) R.drawable.heart_bold else R.drawable.heart
                     ),
                     contentDescription = "Favorite",
                     tint = if (product.isFavorite) Color.Red else Color.Unspecified,
                     modifier = Modifier
                         .size(20.dp)
-                        .clickable { viewModel.toggleFavorite(product) }
+                        .clickable { viewModel.toggleFavorite(product) } // Gọi toggleFavorite
                         .padding(4.dp)
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.shoppingbag),
+                    painter = painterResource(
+                        id = if (product.isFavorite) R.drawable.shoppingbag_bold else R.drawable.shoppingbag
+                    ),
                     contentDescription = "Add to Cart",
                     modifier = Modifier
                         .size(20.dp)
@@ -429,6 +438,7 @@ class ProductViewModel : ViewModel() {
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val favoriteIds = snapshot.children.mapNotNull { it.key }
+                    Log.d("Favorites", "IDs: $favoriteIds")
                     _favoriteProducts.clear()
                     _favoriteProducts.addAll(_products.filter { it.id in favoriteIds })
                     updateFavoriteStatus()
@@ -452,11 +462,13 @@ class ProductViewModel : ViewModel() {
             .child("favorites").child(product.id)
 
         if (product.isFavorite) {
-            // Xóa khỏi favorites
-            favoriteRef.removeValue()
+            favoriteRef.removeValue().addOnCompleteListener {
+                loadFavorites() // Cập nhật lại danh sách yêu thích
+            }
         } else {
-            // Thêm vào favorites
-            favoriteRef.setValue(true)
+            favoriteRef.setValue(true).addOnCompleteListener {
+                loadFavorites() // Cập nhật lại danh sách yêu thích
+            }
         }
     }
     fun addToCart(product: Product) {
@@ -1730,7 +1742,7 @@ fun BottomBar3(navController: NavHostController){
         BottomIcon(R.drawable.magnifier, "") {
             navController.navigate("AndroidCompact13")
         }
-        BottomIcon(R.drawable.heart_filled, "") {
+        BottomIcon(R.drawable.heart_bold, "") {
             navController.navigate("AndroidCompact36")
         }
         BottomIcon(R.drawable.shoppingbag, "") {
@@ -1912,7 +1924,8 @@ fun AndroidCompact32(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 badgeText = "NEW",
-                                badgeColor = Color.Black
+                                badgeColor = Color.Black,
+                                navController = navController
                             )
                         }
                     }
@@ -2033,7 +2046,8 @@ fun AndroidCompact32_2(navController: NavHostController) {
                                 badgeText = "🔥",
                                 badgeColor = Color(0xCBFFC0CB),
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -2452,7 +2466,8 @@ fun AndroidCompact60(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -2561,7 +2576,8 @@ fun AndroidCompact94(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -2670,7 +2686,8 @@ fun AndroidCompact67(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -2806,7 +2823,8 @@ fun AndroidCompact68(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -2915,7 +2933,8 @@ fun AndroidCompact69(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -3024,7 +3043,8 @@ fun AndroidCompact70(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -3763,7 +3783,8 @@ fun AndroidCompact46(navController: NavHostController) {
 }
 
 @Composable
-fun AndroidCompact36(navController: NavHostController, modifier: Modifier = Modifier) {
+fun AndroidCompact36(navController: NavHostController, viewModel: ProductViewModel) {
+
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar3(navController) }
@@ -3773,41 +3794,41 @@ fun AndroidCompact36(navController: NavHostController, modifier: Modifier = Modi
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.vector),
-                            contentDescription = "Arrow",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredWidth(10.dp)
-                                .requiredHeight(16.dp)
-                                .clickable {
-                                    navController.navigate("androidCompact32")
-                                }
+                    Image(
+                        painter = painterResource(id = R.drawable.vector),
+                        contentDescription = "Arrow",
+                        colorFilter = ColorFilter.tint(Color.Black),
+                        modifier = Modifier
+                            .requiredWidth(10.dp)
+                            .requiredHeight(16.dp)
+                            .clickable { navController.navigate("androidCompact32") }
+                    )
+                    Text(
+                        text = "Danh sách yêu thích",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontFamily = robotoMonoMedium,
+                            color = Color.Black,
+                            fontSize = 12.sp
                         )
-                        Text(
-                            text = "Danh sách yêu thích",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontFamily = robotoMonoMedium,
-                                color = Color.Black,
-                                fontSize = 12.sp
-                            )
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
+                    )
+                }
+                Spacer(modifier = Modifier.height(200.dp))
+
+                if (viewModel.favoriteProducts.isEmpty()) {
+                    // Hiển thị khi không có sản phẩm yêu thích
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(0.dp),
-                        modifier = Modifier.fillMaxWidth()
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxSize()
                     ) {
                         Text(
                             text = "Chưa lưu mặt hàng",
@@ -3821,31 +3842,47 @@ fun AndroidCompact36(navController: NavHostController, modifier: Modifier = Modi
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontFamily = robotoMonoRegular,
                                 color = Color.Black,
-                                fontSize = 10.sp // Giảm kích cỡ chữ
+                                fontSize = 10.sp
                             )
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Box(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.Black)
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .clickable { navController.navigate("androidCompact32") }
+                        ) {
+                            Text(
+                                text = "Bắt đầu mua sắm",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoBold,
+                                    color = Color.White,
+                                    fontSize = 12.sp
+                                )
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Box(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Color.Black)
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .align(Alignment.CenterHorizontally)
-                            .clickable {navController.navigate("androidCompact32")}
+                } else {
+                    // Hiển thị danh sách sản phẩm yêu thích
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(1),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(
-                            text = "Bắt đầu mua sắm",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontFamily = robotoMonoBold,
-                                color = Color.White,
-                                fontSize = 12.sp
-                            ),
-                            modifier = Modifier.align(Alignment.Center)
-                        )
+                        items(viewModel.favoriteProducts) { product ->
+                            ProductCard(
+                                product = product,
+                                viewModel = viewModel,
+                                imageResId = product.image,
+                                price = product.price,
+                                tittle = product.tittle,
+                                navController = navController
+                            )
+                        }
                     }
-                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -3853,7 +3890,7 @@ fun AndroidCompact36(navController: NavHostController, modifier: Modifier = Modi
 }
 
 @Composable
-fun AndroidCompact16(navController: NavHostController, modifier: Modifier = Modifier) {
+fun AndroidCompact16(navController: NavHostController) {
     // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
     Scaffold(
         topBar = { TopBar(navController) },     // Thanh trên cố định
@@ -4456,7 +4493,7 @@ fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modi
 }
 
 @Composable
-fun AndroidCompact40(navController: NavHostController, modifier: Modifier = Modifier) {
+fun AndroidCompact40(navController: NavHostController) {
     val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
@@ -4554,7 +4591,8 @@ fun AndroidCompact40(navController: NavHostController, modifier: Modifier = Modi
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -4674,7 +4712,8 @@ fun AndroidCompact58(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -4795,7 +4834,8 @@ fun AndroidCompact57(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -4916,7 +4956,8 @@ fun AndroidCompact56(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -5037,7 +5078,8 @@ fun AndroidCompact55(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -5158,7 +5200,8 @@ fun AndroidCompact54(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -5279,7 +5322,8 @@ fun AndroidCompact53(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -5400,7 +5444,8 @@ fun AndroidCompact51(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -5521,7 +5566,8 @@ fun AndroidCompact50(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -5642,7 +5688,8 @@ fun AndroidCompact48(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -5763,7 +5810,8 @@ fun AndroidCompact49(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -5884,7 +5932,8 @@ fun AndroidCompact47(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -5993,7 +6042,8 @@ fun AndroidCompact61(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -6102,7 +6152,8 @@ fun AndroidCompact62(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -6211,7 +6262,8 @@ fun AndroidCompact63(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -6320,7 +6372,8 @@ fun AndroidCompact64(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -6429,7 +6482,8 @@ fun AndroidCompact65(navController: NavHostController) {
                                 price = product.price,
                                 tittle = product.tittle,
                                 product = product,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                navController = navController
                             )
                         }
                     }
@@ -6649,7 +6703,8 @@ private fun AndroidCompact32_4Preview() {
 @Composable
 private fun AndroidCompact36Preview() {
     val previewNavController = rememberNavController()
-    AndroidCompact36(navController = previewNavController)
+    val previewViewModel = ProductViewModel() // Khởi tạo một instance của ViewModel
+    AndroidCompact36(navController = previewNavController, viewModel = previewViewModel)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)

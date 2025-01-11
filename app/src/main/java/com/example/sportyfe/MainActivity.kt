@@ -107,7 +107,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppNavigation(navController: NavHostController, viewModel: ProductViewModel) {
-    NavHost(navController = navController, startDestination = "AndroidCompact36") {
+    NavHost(navController = navController, startDestination = "AndroidCompact1") {
         composable("AndroidCompact1") { AndroidCompact1(navController) }
         composable("AndroidCompact2") { AndroidCompact2(navController) }
         composable("AndroidCompact3") { AndroidCompact3(navController) }
@@ -119,15 +119,13 @@ fun AppNavigation(navController: NavHostController, viewModel: ProductViewModel)
         composable("AndroidCompact10") { AndroidCompact10(navController) }
         composable("AndroidCompact11") { AndroidCompact11(navController) }
         composable("AndroidCompact13") { AndroidCompact13(navController) }
-        composable("AndroidCompact16") { AndroidCompact16(navController) }
+        composable("AndroidCompact16") { AndroidCompact16(navController, viewModel) }
         composable("AndroidCompact24") { AndroidCompact24(navController) }
         composable("AndroidCompact32") { AndroidCompact32(navController) }
         composable("AndroidCompact32_2") { AndroidCompact32_2(navController) }
         composable("AndroidCompact32_3") { AndroidCompact32_3(navController) }
         composable("AndroidCompact32_4") { AndroidCompact32_4(navController) }
-        composable("AndroidCompact36") {
-            AndroidCompact36(navController, viewModel)
-        }
+        composable("AndroidCompact36") { AndroidCompact36(navController, viewModel) }
         composable("AndroidCompact42") { AndroidCompact42(navController) }
         composable("AndroidCompact46") { AndroidCompact46(navController) }
         composable("AndroidCompact47") { AndroidCompact47(navController) }
@@ -159,7 +157,8 @@ data class Product(
     val status: String = "",
     val category: String = "",
     val gender: String = "",
-    var isFavorite: Boolean = false
+    var isFavorite: Boolean = false,
+    var isInCart: Boolean = false // Sản phẩm có trong giỏ hàng hay không
 )//cái này chi tiết sản phẩm từ cơ sở dữ liệu
 
 @Composable
@@ -233,7 +232,7 @@ fun ProductCard(
                     painter = rememberAsyncImagePainter(model = product.image),
                     contentDescription = product.tittle,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxSize()
                         .aspectRatio(1.0f)
                 )
             }
@@ -296,7 +295,7 @@ fun ProductCard(
                     contentDescription = "Favorite",
                     tint = if (product.isFavorite) Color.Red else Color.Gray,
                     modifier = Modifier
-                        .size(20.dp)
+                        .size(25.dp)
                         .clickable { viewModel.toggleFavorite(product) }
                         .padding(1.dp)
                 )
@@ -304,7 +303,7 @@ fun ProductCard(
                     painter = painterResource(id = R.drawable.shoppingbag),
                     contentDescription = "Add to Cart",
                     modifier = Modifier
-                        .size(20.dp)
+                        .size(25.dp)
                         .clickable { viewModel.addToCart(product) }
                         .padding(1.dp)
                 )
@@ -315,15 +314,20 @@ fun ProductCard(
 
 class ProductViewModel : ViewModel() {
     private val database = FirebaseDatabase.getInstance().reference
+
     private val _products = mutableStateListOf<Product>()
     val products: List<Product> = _products
 
     private val _favoriteProducts = mutableStateListOf<Product>()
     val favoriteProducts: List<Product> = _favoriteProducts
 
+    private val _cartProducts = mutableStateListOf<Product>()
+    val cartProducts: List<Product> = _cartProducts
+
     init {
         loadProducts()
         loadFavorites()
+        loadCart()
     }
 
     // Tải danh sách sản phẩm từ Firebase
@@ -334,14 +338,14 @@ class ProductViewModel : ViewModel() {
                 for (productSnapshot in snapshot.children) {
                     val product = productSnapshot.getValue(Product::class.java)
                     product?.let {
-                        // Gán id từ key của Firebase và cập nhật URL ảnh đầy đủ
-                        val imageUrl = "http://localhost:5255${it.image}" // Thay localhost bằng URL thực tế
+                        val imageUrl = "http://192.168.1.78:5255${it.image}" // Đảm bảo URL đầy đủ
                         newProducts.add(it.copy(id = productSnapshot.key ?: "", image = imageUrl))
                     }
                 }
                 _products.clear()
                 _products.addAll(newProducts)
-                updateFavoriteStatus() // Đồng bộ trạng thái yêu thích
+                updateFavoriteStatus()
+                updateCartStatus() // Cập nhật trạng thái giỏ hàng
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -368,6 +372,24 @@ class ProductViewModel : ViewModel() {
             })
     }
 
+    // Tải danh sách sản phẩm trong giỏ hàng
+    private fun loadCart() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        database.child("users").child(userId).child("cart")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val cartIds = snapshot.children.mapNotNull { it.key }
+                    _cartProducts.clear()
+                    _cartProducts.addAll(_products.filter { it.id in cartIds })
+                    updateCartStatus()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("ProductViewModel", "Failed to load cart: ${error.message}")
+                }
+            })
+    }
+
     // Cập nhật trạng thái yêu thích trong danh sách sản phẩm
     private fun updateFavoriteStatus() {
         _products.forEach { product ->
@@ -375,19 +397,27 @@ class ProductViewModel : ViewModel() {
         }
     }
 
+    // Cập nhật trạng thái trong giỏ hàng
+    private fun updateCartStatus() {
+        _products.forEach { product ->
+            product.isInCart = _cartProducts.any { it.id == product.id }
+        }
+    }
+
     // Thêm hoặc xóa sản phẩm khỏi danh sách yêu thích
     fun toggleFavorite(product: Product) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val favoriteRef = database.child("users").child(userId)
-            .child("favorites").child(product.id)
+        val favoriteRef = database.child("users").child(userId).child("favorites").child(product.id)
 
         if (product.isFavorite) {
             favoriteRef.removeValue().addOnCompleteListener {
-                loadFavorites()
+                _favoriteProducts.remove(product) // Loại bỏ khỏi danh sách cục bộ
+                product.isFavorite = false
             }
         } else {
             favoriteRef.setValue(true).addOnCompleteListener {
-                loadFavorites()
+                _favoriteProducts.add(product) // Thêm vào danh sách cục bộ
+                product.isFavorite = true
             }
         }
     }
@@ -396,13 +426,23 @@ class ProductViewModel : ViewModel() {
     fun addToCart(product: Product) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val cartRef = database.child("users").child(userId).child("cart").child(product.id)
-        cartRef.setValue(true).addOnCompleteListener {
-            Log.d("ProductViewModel", "Product added to cart: ${product.tittle}")
-        }.addOnFailureListener {
-            Log.e("ProductViewModel", "Failed to add to cart: ${it.message}")
+
+        if (!product.isInCart) {
+            cartRef.setValue(true).addOnCompleteListener {
+                _cartProducts.add(product) // Thêm vào danh sách cục bộ
+                product.isInCart = true
+            }.addOnFailureListener {
+                Log.e("ProductViewModel", "Failed to add to cart: ${it.message}")
+            }
+        } else {
+            cartRef.removeValue().addOnCompleteListener {
+                _cartProducts.remove(product) // Loại bỏ khỏi danh sách cục bộ
+                product.isInCart = false
+            }
         }
     }
 }
+
 
 @Composable
 fun AndroidCompact1(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -1761,7 +1801,7 @@ fun AndroidCompact32(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -1883,7 +1923,7 @@ fun AndroidCompact32_2(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -2286,7 +2326,7 @@ fun AndroidCompact60(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -2403,7 +2443,7 @@ fun AndroidCompact67(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -2521,7 +2561,7 @@ fun AndroidCompact68(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -2655,7 +2695,7 @@ fun AndroidCompact69(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -3424,7 +3464,7 @@ fun AndroidCompact36(navController: NavHostController, viewModel: ProductViewMod
                         )
                     )
                 }
-                Spacer(modifier = Modifier.height(200.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 if (viewModel.favoriteProducts.isEmpty()) {
                     // Hiển thị khi không có sản phẩm yêu thích
@@ -3471,7 +3511,7 @@ fun AndroidCompact36(navController: NavHostController, viewModel: ProductViewMod
                 } else {
                     // Hiển thị danh sách sản phẩm yêu thích
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(1),
+                        columns = GridCells.Fixed(2),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -3490,16 +3530,118 @@ fun AndroidCompact36(navController: NavHostController, viewModel: ProductViewMod
 }
 
 @Composable
-fun AndroidCompact16(navController: NavHostController) {
-    // Sử dụng Scaffold để tạo cấu trúc thanh trên, thanh dưới và nội dung giữa
+fun PaymentSummary(
+    totalAmount: Long,
+    shippingFee: Long = 21000L, // Mặc định phí vận chuyển là 21,000 VND
+    onPaymentClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(Color.LightGray, RoundedCornerShape(12.dp))
+            .padding(16.dp)
+    ) {
+        // Tổng tiền
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Tổng tiền",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = robotoMonoRegular,
+                    color = Color.Black
+                )
+            )
+            Text(
+                text = "Giá: ${totalAmount.formatPrice()}",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = robotoMonoRegular,
+                    color = Color.Black
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Phí vận chuyển
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Phí vận chuyển",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = robotoMonoRegular,
+                    color = Color.Black
+                )
+            )
+            Text(
+                text = "Giá: ${shippingFee.formatPrice()}",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = robotoMonoRegular,
+                    color = Color.Black
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Tổng cộng
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Tổng",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = robotoMonoBold,
+                    color = Color.Black
+                )
+            )
+            Text(
+                text = "Giá: ${(totalAmount + shippingFee).formatPrice()}",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = robotoMonoBold,
+                    color = Color.Black
+                )
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Nút thanh toán
+        Button(
+            onClick = onPaymentClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+        ) {
+            Text(
+                text = "Thanh toán",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = robotoMonoBold,
+                    color = Color.White
+                )
+            )
+        }
+    }
+}
+
+@Composable
+fun AndroidCompact16(navController: NavHostController, viewModel: ProductViewModel = viewModel()) {
+    val cartProducts = viewModel.cartProducts // Lấy danh sách sản phẩm trong giỏ hàng từ ViewModel
+    Log.d("Cart List", cartProducts.toString())
     Scaffold(
-        topBar = { TopBar(navController) },     // Thanh trên cố định
-        bottomBar = { BottomBar4(navController) } // Thanh dưới cố định
+        topBar = { TopBar(navController) },
+        bottomBar = { BottomBar4(navController) }
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues) // Chừa khoảng trống cho topBar và bottomBar
+                .padding(paddingValues)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 Column(
@@ -3507,27 +3649,33 @@ fun AndroidCompact16(navController: NavHostController) {
                         .fillMaxWidth()
                         .padding(start = 16.dp)
                 ) {
+                    // Tiêu đề giỏ hàng
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                    }
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(0.dp),
-                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             text = "Giỏ hàng",
                             style = MaterialTheme.typography.bodyLarge.copy(
                                 fontFamily = robotoMonoBold,
-                                color = Color.Black
-                            )
+                                color = Color.Black,
+                                fontSize = 20.sp
+                            ),
+                            modifier = Modifier.padding(top = 16.dp)
                         )
-                        Box(
-                            contentAlignment = Alignment.Center // Căn giữa các phần tử trong Box
-                        ) {
-                            // Hình ảnh Cart Empty ở dưới
+                    }
+                }
+
+                // Kiểm tra nếu giỏ hàng trống
+                if (cartProducts.isEmpty()) {
+                    // Hiển thị trạng thái giỏ hàng trống
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            // Hình ảnh Cart Empty
                             Image(
                                 painter = painterResource(id = R.drawable.cart_empty),
                                 contentDescription = "Empty Cart Image",
@@ -3535,6 +3683,7 @@ fun AndroidCompact16(navController: NavHostController) {
                                     .size(240.dp)
                                     .padding(vertical = 16.dp)
                             )
+                            // Overlay Image
                             Image(
                                 painter = painterResource(id = R.drawable.img_45),
                                 contentDescription = "Overlay Image",
@@ -3558,45 +3707,64 @@ fun AndroidCompact16(navController: NavHostController) {
                                 fontSize = 10.sp
                             )
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Box(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.Black)
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .align(Alignment.CenterHorizontally)
+                        ) {
+                            Text(
+                                text = "Tìm kiếm trong cửa hàng",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoBold,
+                                    color = Color.White,
+                                    fontSize = 12.sp
+                                ),
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .clickable { navController.navigate("androidCompact32") }
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Box(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.Black)
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .align(Alignment.CenterHorizontally)
+                        ) {
+                            Text(
+                                text = "Tìm kiếm danh sách yêu thích",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = robotoMonoBold,
+                                    color = Color.White,
+                                    fontSize = 12.sp
+                                ),
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .clickable { navController.navigate("androidCompact36") }
+                            )
+                        }
                     }
-                    Box(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Color.Black)
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .align(Alignment.CenterHorizontally)
+                } else {
+                    // Hiển thị danh sách sản phẩm trong giỏ hàng
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(
-                            text = "Tìm kiếm trong cửa hàng",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontFamily = robotoMonoBold,
-                                color = Color.White,
-                                fontSize = 12.sp
-                            ),
-                            modifier = Modifier.align(Alignment.Center).clickable{navController.navigate("androidCompact32")}
-                        )
+                        items(viewModel.cartProducts) { product ->
+                            ProductCard(
+                                product = product,
+                                viewModel = viewModel,
+                                navController = navController
+                            )
+                        }
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Box(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Color.Black)
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .align(Alignment.CenterHorizontally)
-                    ) {
-                        Text(
-                            text = "Tìm kiếm danh sách yêu thích",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontFamily = robotoMonoBold,
-                                color = Color.White,
-                                fontSize = 12.sp
-                            ),
-                            modifier = Modifier.align(Alignment.Center).clickable{navController.navigate("androidCompact36")}
-                        )
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -4114,7 +4282,7 @@ fun AndroidCompact57(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -4244,7 +4412,7 @@ fun AndroidCompact55(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -4362,7 +4530,7 @@ fun AndroidCompact54(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -4492,7 +4660,7 @@ fun AndroidCompact53(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -4610,7 +4778,7 @@ fun AndroidCompact50(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -4728,7 +4896,7 @@ fun AndroidCompact48(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -4846,7 +5014,7 @@ fun AndroidCompact49(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -4964,7 +5132,7 @@ fun AndroidCompact47(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -5082,7 +5250,7 @@ fun AndroidCompact61(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -5200,7 +5368,7 @@ fun AndroidCompact62(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -5318,7 +5486,7 @@ fun AndroidCompact63(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -5436,7 +5604,7 @@ fun AndroidCompact65(navController: NavHostController) {
                         val gender = child.child("gender").getValue(String::class.java) ?: ""
 
                         // Tạo URL đầy đủ cho hình ảnh
-                        val fullImageUrl = "http://localhost:5255$imagePath"
+                        val fullImageUrl = "http://192.168.1.78:5255$imagePath.png"
 
                         // Thêm sản phẩm vào danh sách
                         productList.add(
@@ -5722,7 +5890,8 @@ private fun AndroidCompact36Preview() {
 @Composable
 private fun AndroidCompact16Preview() {
     val previewNavController = rememberNavController()
-    AndroidCompact16(navController = previewNavController)
+    val previewViewModel = ProductViewModel() // Khởi tạo một instance của ViewModel
+    AndroidCompact16(navController = previewNavController, viewModel = previewViewModel)
 }
 
 @Preview(widthDp = 412, heightDp = 917)

@@ -79,4 +79,6 @@ dependencies {
 
     // LiveData với Compose
     implementation("androidx.compose.runtime:runtime-livedata")
+
+    implementation("io.coil-kt:coil-compose:2.4.0") // Thêm Coil
 }

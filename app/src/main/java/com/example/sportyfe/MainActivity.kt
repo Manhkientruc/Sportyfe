@@ -82,6 +82,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.activity.viewModels
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
@@ -127,135 +128,39 @@ fun AppNavigation(navController: NavHostController, viewModel: ProductViewModel)
         composable("AndroidCompact36") {
             AndroidCompact36(navController, viewModel)
         }
-        composable("AndroidCompact40") { AndroidCompact40(navController) }
         composable("AndroidCompact42") { AndroidCompact42(navController) }
         composable("AndroidCompact46") { AndroidCompact46(navController) }
         composable("AndroidCompact47") { AndroidCompact47(navController) }
         composable("AndroidCompact48") { AndroidCompact48(navController) }
         composable("AndroidCompact49") { AndroidCompact49(navController) }
         composable("AndroidCompact50") { AndroidCompact50(navController) }
-        composable("AndroidCompact51") { AndroidCompact51(navController) }
         composable("AndroidCompact53") { AndroidCompact53(navController) }
         composable("AndroidCompact54") { AndroidCompact54(navController) }
         composable("AndroidCompact55") { AndroidCompact55(navController) }
-        composable("AndroidCompact56") { AndroidCompact56(navController) }
         composable("AndroidCompact57") { AndroidCompact57(navController) }
-        composable("AndroidCompact58") { AndroidCompact58(navController) }
         composable("AndroidCompact59") { AndroidCompact59(navController) }
         composable("AndroidCompact60") { AndroidCompact60(navController) }
         composable("AndroidCompact61") { AndroidCompact61(navController) }
         composable("AndroidCompact62") { AndroidCompact62(navController) }
         composable("AndroidCompact63") { AndroidCompact63(navController) }
-        composable("AndroidCompact64") { AndroidCompact64(navController) }
         composable("AndroidCompact65") { AndroidCompact65(navController) }
         composable("AndroidCompact67") { AndroidCompact67(navController) }
         composable("AndroidCompact68") { AndroidCompact68(navController) }
         composable("AndroidCompact69") { AndroidCompact69(navController) }
-        composable("AndroidCompact70") { AndroidCompact70(navController) }
         composable("AndroidCompact71") { AndroidCompact71(navController) }
-        composable("AndroidCompact94") { AndroidCompact94(navController) }
     }
 }
 data class Product(
-    val id: String = "", // Thêm id để track sản phẩm
-    val image: Int = 0,
+    val id: String = "",
+    val image: String = "", // URL đầy đủ của hình ảnh
     val price: Long = 0,
     val tittle: String = "",
+    val description: String = "",
+    val status: String = "",
+    val category: String = "",
+    val gender: String = "",
     var isFavorite: Boolean = false
-) //cái này chi tiết sản phẩm từ cơ sở dữ liệu
-
-private val imageMap = mapOf(
-/*    821 to R.drawable.img_821,
-    822 to R.drawable.img_822,
-    823 to R.drawable.img_823,
-    100 to R.drawable.ig_100,*/
-    101 to R.drawable.ig_101,
-    102 to R.drawable.ig_102,
-    103 to R.drawable.ig_103,
-    /*104 to R.drawable.ig_104,
-    105 to R.drawable.ig_105,
-    106 to R.drawable.ig_106,
-    107 to R.drawable.ig_107,
-    108 to R.drawable.ig_108,
-    109 to R.drawable.ig_109,
-    110 to R.drawable.ig_110,
-    111 to R.drawable.ig_111,
-    112 to R.drawable.ig_112,
-    113 to R.drawable.ig_113,
-    114 to R.drawable.ig_114,
-    115 to R.drawable.ig_115,
-    116 to R.drawable.ig_116,
-    117 to R.drawable.ig_117,
-    118 to R.drawable.ig_118,
-    119 to R.drawable.ig_119,
-    120 to R.drawable.ig_120,
-    121 to R.drawable.ig_121,
-    122 to R.drawable.ig_122,
-    123 to R.drawable.ig_123,
-    124 to R.drawable.ig_124,
-    125 to R.drawable.ig_125,
-    126 to R.drawable.ig_126,
-    127 to R.drawable.ig_127,
-    128 to R.drawable.ig_128,
-    129 to R.drawable.ig_129,
-    130 to R.drawable.ig_130,
-    131 to R.drawable.ig_131,
-    132 to R.drawable.ig_132,
-    133 to R.drawable.ig_133,
-    134 to R.drawable.ig_134,
-    135 to R.drawable.ig_135,
-    136 to R.drawable.ig_136,
-    137 to R.drawable.ig_137,
-    138 to R.drawable.ig_138,
-    139 to R.drawable.ig_139,
-    140 to R.drawable.ig_140,
-    141 to R.drawable.ig_141,
-    142 to R.drawable.ig_142,
-    143 to R.drawable.ig_143,
-    144 to R.drawable.ig_144,
-    145 to R.drawable.ig_145,
-    146 to R.drawable.ig_146,
-    147 to R.drawable.ig_147,
-    148 to R.drawable.ig_148,
-    149 to R.drawable.ig_149,
-    150 to R.drawable.ig_150,
-    151 to R.drawable.ig_151,
-    152 to R.drawable.ig_152,
-    153 to R.drawable.ig_153,
-    154 to R.drawable.ig_154,
-    155 to R.drawable.ig_155,
-    156 to R.drawable.ig_156,
-    157 to R.drawable.ig_157,
-    158 to R.drawable.ig_158,
-    159 to R.drawable.ig_159,
-    160 to R.drawable.ig_160,
-    161 to R.drawable.ig_161,
-    162 to R.drawable.ig_162,
-    163 to R.drawable.ig_163,
-    164 to R.drawable.ig_164,
-    165 to R.drawable.ig_165,
-    166 to R.drawable.ig_166,
-    167 to R.drawable.ig_167,
-    168 to R.drawable.ig_168,
-    169 to R.drawable.ig_169,
-    170 to R.drawable.ig_170,
-    171 to R.drawable.ig_171,
-    172 to R.drawable.ig_172,
-    173 to R.drawable.ig_173,
-    174 to R.drawable.ig_174,
-    175 to R.drawable.ig_175,
-    176 to R.drawable.ig_176,
-    177 to R.drawable.ig_177,
-    178 to R.drawable.ig_178,
-    179 to R.drawable.ig_179,
-    180 to R.drawable.ig_180,
-    181 to R.drawable.ig_181,
-    182 to R.drawable.ig_182,
-    183 to R.drawable.ig_183,
-    184 to R.drawable.ig_184,
-    185 to R.drawable.ig_185,
-    186 to R.drawable.ig_186*/
-) //cái này là hình ảnh từ cơ sở dữ liệu
+)//cái này chi tiết sản phẩm từ cơ sở dữ liệu
 
 @Composable
 fun BottomIcon(iconRes: Int, label: String, onClick: () -> Unit) {
@@ -276,22 +181,18 @@ fun Long.formatPrice(): String {
     // Hoặc
     // return "đ ${DecimalFormat("#,###").format(this)}"  // Sẽ format: đ 1.500.000
 }
+
 @Composable
 fun ProductCard(
     product: Product,
     viewModel: ProductViewModel,
-    imageResId: Int,
-    price: Long,
-    tittle: String,
-    badgeText: String? = null,
-    badgeColor: Color = Color.Black,
     navController: NavController
 ) {
     Card(
         modifier = Modifier
-            .padding(5.dp)
+            .padding(8.dp)
             .width(160.dp)
-            .height(200.dp),
+            .height(240.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
@@ -301,16 +202,19 @@ fun ProductCard(
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Badge hiển thị nếu có
-            badgeText?.let {
+            // Badge hiển thị trạng thái "Hot" hoặc "New"
+            if (product.status.isNotEmpty()) {
                 Box(
                     modifier = Modifier
-                        .background(badgeColor, RoundedCornerShape(8.dp))
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
                         .align(Alignment.Start)
+                        .background(
+                            color = if (product.status == "New") Color.Black else Color.Red,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = it,
+                        text = product.status.uppercase(),
                         color = Color.White,
                         fontSize = 12.sp,
                         fontFamily = robotoMonoBold
@@ -326,44 +230,60 @@ fun ProductCard(
                     .clip(RoundedCornerShape(8.dp))
             ) {
                 Image(
-                    painter = painterResource(id = imageResId),
-                    contentDescription = tittle,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize()
+                    painter = rememberAsyncImagePainter(model = product.image),
+                    contentDescription = product.tittle,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxWidth()
+                        .aspectRatio(1.0f)
                 )
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Tên sản phẩm
+            Text(
+                text = product.tittle,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = robotoMonoMedium,
+                    fontSize = 14.sp
+                ),
+                color = Color.Black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Mô tả sản phẩm (nếu có)
+            if (product.description.isNotEmpty()) {
+                Text(
+                    text = product.description,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontFamily = robotoMonoRegular,
+                        fontSize = 10.sp,
+                        color = Color.Gray
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
             // Giá sản phẩm
             Text(
-                text = price.formatPrice(),  // Format price khi hiển thị
+                text = "${product.price.formatPrice()} VND",
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontFamily = robotoMonoMedium,
                     fontSize = 12.sp
                 ),
                 color = Color.Black,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp)
-            )
-
-            // Tên sản phẩm
-            Text(
-                text = tittle,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontFamily = robotoMonoRegular,
-                    fontSize = 10.sp
-                ),
-                color = Color.Gray,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 2.dp)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Hàng chứa nút tương tác
+            // Nút tương tác
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -374,21 +294,19 @@ fun ProductCard(
                         id = if (product.isFavorite) R.drawable.heart_bold else R.drawable.heart
                     ),
                     contentDescription = "Favorite",
-                    tint = if (product.isFavorite) Color.Red else Color.Unspecified,
+                    tint = if (product.isFavorite) Color.Red else Color.Gray,
                     modifier = Modifier
                         .size(20.dp)
-                        .clickable { viewModel.toggleFavorite(product) } // Gọi toggleFavorite
-                        .padding(4.dp)
+                        .clickable { viewModel.toggleFavorite(product) }
+                        .padding(1.dp)
                 )
                 Icon(
-                    painter = painterResource(
-                        id = if (product.isFavorite) R.drawable.shoppingbag_bold else R.drawable.shoppingbag
-                    ),
+                    painter = painterResource(id = R.drawable.shoppingbag),
                     contentDescription = "Add to Cart",
                     modifier = Modifier
                         .size(20.dp)
                         .clickable { viewModel.addToCart(product) }
-                        .padding(4.dp)
+                        .padding(1.dp)
                 )
             }
         }
@@ -408,6 +326,7 @@ class ProductViewModel : ViewModel() {
         loadFavorites()
     }
 
+    // Tải danh sách sản phẩm từ Firebase
     private fun loadProducts() {
         database.child("products").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -415,47 +334,48 @@ class ProductViewModel : ViewModel() {
                 for (productSnapshot in snapshot.children) {
                     val product = productSnapshot.getValue(Product::class.java)
                     product?.let {
-                        // Gán id từ key của Firebase
-                        newProducts.add(it.copy(id = productSnapshot.key ?: ""))
+                        // Gán id từ key của Firebase và cập nhật URL ảnh đầy đủ
+                        val imageUrl = "http://localhost:5255${it.image}" // Thay localhost bằng URL thực tế
+                        newProducts.add(it.copy(id = productSnapshot.key ?: "", image = imageUrl))
                     }
                 }
                 _products.clear()
                 _products.addAll(newProducts)
-                // Cập nhật trạng thái favorite
-                updateFavoriteStatus()
+                updateFavoriteStatus() // Đồng bộ trạng thái yêu thích
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Xử lý lỗi
+                Log.e("ProductViewModel", "Failed to load products: ${error.message}")
             }
         })
     }
 
+    // Tải danh sách yêu thích của user
     private fun loadFavorites() {
-        // Giả sử ta lưu favorites trong node "favorites" của user hiện tại
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         database.child("users").child(userId).child("favorites")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val favoriteIds = snapshot.children.mapNotNull { it.key }
-                    Log.d("Favorites", "IDs: $favoriteIds")
                     _favoriteProducts.clear()
                     _favoriteProducts.addAll(_products.filter { it.id in favoriteIds })
                     updateFavoriteStatus()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Xử lý lỗi
+                    Log.e("ProductViewModel", "Failed to load favorites: ${error.message}")
                 }
             })
     }
 
+    // Cập nhật trạng thái yêu thích trong danh sách sản phẩm
     private fun updateFavoriteStatus() {
         _products.forEach { product ->
             product.isFavorite = _favoriteProducts.any { it.id == product.id }
         }
     }
 
+    // Thêm hoặc xóa sản phẩm khỏi danh sách yêu thích
     fun toggleFavorite(product: Product) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val favoriteRef = database.child("users").child(userId)
@@ -463,19 +383,24 @@ class ProductViewModel : ViewModel() {
 
         if (product.isFavorite) {
             favoriteRef.removeValue().addOnCompleteListener {
-                loadFavorites() // Cập nhật lại danh sách yêu thích
+                loadFavorites()
             }
         } else {
             favoriteRef.setValue(true).addOnCompleteListener {
-                loadFavorites() // Cập nhật lại danh sách yêu thích
+                loadFavorites()
             }
         }
     }
+
+    // Thêm sản phẩm vào giỏ hàng
     fun addToCart(product: Product) {
-        // Logic thêm sản phẩm vào giỏ hàng
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        database.child("users").child(userId).child("cart").child(product.id.toString())
-            .setValue(true)
+        val cartRef = database.child("users").child(userId).child("cart").child(product.id)
+        cartRef.setValue(true).addOnCompleteListener {
+            Log.d("ProductViewModel", "Product added to cart: ${product.tittle}")
+        }.addOnFailureListener {
+            Log.e("ProductViewModel", "Failed to add to cart: ${it.message}")
+        }
     }
 }
 
@@ -1826,24 +1751,31 @@ fun AndroidCompact32(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -1858,7 +1790,6 @@ fun AndroidCompact32(navController: NavHostController) {
             }
         })
     }
-
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -1910,21 +1841,16 @@ fun AndroidCompact32(navController: NavHostController) {
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        // Chỉ lọc sản phẩm có trạng thái "New"
+                        items(products.value.filter { it.status == "New" }) { product ->
                             ProductCard(
                                 product = product,
                                 viewModel = viewModel,
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
-                                badgeText = "NEW",
-                                badgeColor = Color.Black,
                                 navController = navController
                             )
                         }
@@ -1947,24 +1873,31 @@ fun AndroidCompact32_2(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -1979,7 +1912,6 @@ fun AndroidCompact32_2(navController: NavHostController) {
             }
         })
     }
-
     Scaffold(
         topBar = { TopBar(navController) },     // Thanh trên cố định
         bottomBar = { BottomBar(navController) } // Thanh dưới cố định
@@ -2032,19 +1964,14 @@ fun AndroidCompact32_2(navController: NavHostController) {
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        // Chỉ lọc sản phẩm có trạng thái "New"
+                        items(products.value.filter { it.status == "Hot" }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
-                                badgeText = "🔥",
-                                badgeColor = Color(0xCBFFC0CB),
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -2213,37 +2140,6 @@ fun AndroidCompact59(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact70")}
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.all_men_shirt),
-                                contentDescription = "Icon",
-                                modifier = Modifier
-                                    .size(50.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "TẤT CẢ CÁC ÁO CHO NAM",
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontFamily = robotoMonoMedium
-                                ),
-                                color = Color.Black,
-                            )
-                        }
-                    }
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(75.dp)
-                            .border(1.dp, Color.Gray)
                             .clickable{navController.navigate("AndroidCompact60")}
                     ) {
                         Row(
@@ -2370,7 +2266,7 @@ fun AndroidCompact59(navController: NavHostController) {
 
 @Composable
 fun AndroidCompact60(navController: NavHostController) {
-    val viewModel: ProductViewModel = viewModel()
+    val viewModel: ProductViewModel = viewModel() // Sử dụng ProductViewModel để quản lý dữ liệu
     val products = remember { mutableStateOf(emptyList<Product>()) }
 
     LaunchedEffect(Unit) {
@@ -2380,24 +2276,31 @@ fun AndroidCompact60(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -2422,6 +2325,7 @@ fun AndroidCompact60(navController: NavHostController) {
                 .padding(paddingValues)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
+                // Header với thông tin danh mục
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -2452,134 +2356,24 @@ fun AndroidCompact60(navController: NavHostController) {
                         )
                     }
                 }
-                Box {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
-                            ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
-                                product = product,
-                                viewModel = viewModel,
-                                navController = navController
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun AndroidCompact94(navController: NavHostController) {
-    val viewModel: ProductViewModel = viewModel()
-    val products = remember { mutableStateOf(emptyList<Product>()) }
-
-    LaunchedEffect(Unit) {
-        val database = FirebaseDatabase.getInstance().getReference("products")
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val productList = mutableListOf<Product>()
-                for (child in snapshot.children) {
-                    try {
-                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
-                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
-
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
-                            )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
-                    } catch (e: Exception) {
-                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
-                    }
-                }
-
-                products.value = productList
-                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
-            }
-        })
-    }
-
-    Scaffold(
-        topBar = { TopBar(navController) },
-        bottomBar = { BottomBar(navController) }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(
+                // Hiển thị danh sách sản phẩm
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2), // Hiển thị 2 cột
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.vector),
-                            contentDescription = "Arrow",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredWidth(10.dp)
-                                .requiredHeight(16.dp)
-                                .clickable {
-                                    navController.navigate("AndroidCompact71")
-                                }
+                    items(viewModel.products.filter {
+                        it.category == "Áo phông/Áo polo" && it.gender == "Nam"
+                    }) { product ->
+                        ProductCard(
+                            product = product,
+                            viewModel = viewModel,
+                            navController = navController
                         )
-                        Text(
-                            text = "NAM - GIÀY - TẤT CẢ SẢN PHẨM",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontFamily = robotoMonoBold,
-                                color = Color.Black,
-                                fontSize = 16.sp
-                            )
-                        )
-                    }
-                }
-                Box {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
-                            ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
-                                product = product,
-                                viewModel = viewModel,
-                                navController = navController
-                            )
-                        }
                     }
                 }
             }
@@ -2599,24 +2393,31 @@ fun AndroidCompact67(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -2674,17 +2475,18 @@ fun AndroidCompact67(navController: NavHostController) {
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Áo thun/Áo hoodies" && it.gender == "Nam"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -2709,24 +2511,31 @@ fun AndroidCompact68(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -2797,31 +2606,21 @@ fun AndroidCompact68(navController: NavHostController) {
                                 }
                         )
                     }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Interface essential/Filter",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredSize(size = 32.dp))
-                    }
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Áo luyện tập" && it.gender == "Nam"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -2846,24 +2645,31 @@ fun AndroidCompact69(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -2878,7 +2684,6 @@ fun AndroidCompact69(navController: NavHostController) {
             }
         })
     }
-
     Scaffold(
         topBar = { TopBar(navController) },
         bottomBar = { BottomBar(navController) }
@@ -2921,127 +2726,18 @@ fun AndroidCompact69(navController: NavHostController) {
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Áo khoác" && it.gender == "Nam"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
-                                product = product,
-                                viewModel = viewModel,
-                                navController = navController
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun AndroidCompact70(navController: NavHostController) {
-    val viewModel: ProductViewModel = viewModel()
-    val products = remember { mutableStateOf(emptyList<Product>()) }
-
-    LaunchedEffect(Unit) {
-        val database = FirebaseDatabase.getInstance().getReference("products")
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val productList = mutableListOf<Product>()
-                for (child in snapshot.children) {
-                    try {
-                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
-                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
-
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
-                            )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
-                    } catch (e: Exception) {
-                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
-                    }
-                }
-
-                products.value = productList
-                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
-            }
-        })
-    }
-
-    Scaffold(
-        topBar = { TopBar(navController) },
-        bottomBar = { BottomBar(navController) }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.vector),
-                            contentDescription = "Arrow",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredWidth(10.dp)
-                                .requiredHeight(16.dp)
-                                .clickable {
-                                    navController.navigate("AndroidCompact59")
-                                }
-                        )
-                        Text(
-                            text = "NAM - ÁO - TẤT CẢ",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontFamily = robotoMonoBold,
-                                color = Color.Black,
-                                fontSize = 16.sp
-                            )
-                        )
-                    }
-                }
-                Box {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
-                            ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -3102,37 +2798,6 @@ fun AndroidCompact71(navController: NavHostController) {
                     verticalArrangement = Arrangement.spacedBy(0.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(75.dp)
-                            .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact94")}
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.all_shoe),
-                                contentDescription = "Icon",
-                                modifier = Modifier
-                                    .size(50.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "TẤT CẢ GIÀY DÀNH CHO NAM",
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontFamily = robotoMonoMedium
-                                ),
-                                color = Color.Black,
-                            )
-                        }
-                    }
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -3418,37 +3083,6 @@ fun AndroidCompact42(navController: NavHostController) {
                             .fillMaxWidth()
                             .height(75.dp)
                             .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact51")}
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.all_women_shirt),
-                                contentDescription = "Icon",
-                                modifier = Modifier
-                                    .size(50.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "TẤT CẢ CÁC ÁO CHO NỮ",
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontFamily = robotoMonoMedium
-                                ),
-                                color = Color.Black,
-                            )
-                        }
-                    }
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(75.dp)
-                            .border(1.dp, Color.Gray)
                             .clickable{navController.navigate("AndroidCompact47")}
                     ) {
                         Row(
@@ -3621,37 +3255,6 @@ fun AndroidCompact46(navController: NavHostController) {
                     verticalArrangement = Arrangement.spacedBy(0.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(75.dp)
-                            .border(1.dp, Color.Gray)
-                            .clickable{navController.navigate("AndroidCompact58")}
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.all_women_shoe),
-                                contentDescription = "Icon",
-                                modifier = Modifier
-                                    .size(50.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "TẤT CẢ GIÀY DÀNH CHO NỮ",
-                                style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontFamily = robotoMonoMedium
-                                ),
-                                color = Color.Black,
-                            )
-                        }
-                    }
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
@@ -3876,9 +3479,6 @@ fun AndroidCompact36(navController: NavHostController, viewModel: ProductViewMod
                             ProductCard(
                                 product = product,
                                 viewModel = viewModel,
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 navController = navController
                             )
                         }
@@ -4493,237 +4093,6 @@ fun AndroidCompact24(navController: NavHostController, modifier: Modifier = Modi
 }
 
 @Composable
-fun AndroidCompact40(navController: NavHostController) {
-    val viewModel: ProductViewModel = viewModel()
-    val products = remember { mutableStateOf(emptyList<Product>()) }
-
-    LaunchedEffect(Unit) {
-        val database = FirebaseDatabase.getInstance().getReference("products")
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val productList = mutableListOf<Product>()
-                for (child in snapshot.children) {
-                    try {
-                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
-                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
-
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
-                            )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
-                    } catch (e: Exception) {
-                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
-                    }
-                }
-
-                products.value = productList
-                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
-            }
-        })
-    }
-
-    Scaffold(
-        topBar = { TopBar(navController) },
-        bottomBar = { BottomBar2(navController) }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.vector),
-                            contentDescription = "Arrow",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredWidth(10.dp)
-                                .requiredHeight(16.dp)
-                                .clickable {
-                                    navController.navigate("androidCompact13")
-                                }
-                        )
-                        Text(
-                            text = "Đã xem gần đây",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontFamily = robotoMonoBold,
-                                color = Color.Black,
-                                fontSize = 16.sp
-                            )
-                        )
-                    }
-                }
-                Box {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
-                            ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
-                                product = product,
-                                viewModel = viewModel,
-                                navController = navController
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-@Composable
-fun AndroidCompact58(navController: NavHostController) {
-    val viewModel: ProductViewModel = viewModel()
-    val products = remember { mutableStateOf(emptyList<Product>()) }
-
-    LaunchedEffect(Unit) {
-        val database = FirebaseDatabase.getInstance().getReference("products")
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val productList = mutableListOf<Product>()
-                for (child in snapshot.children) {
-                    try {
-                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
-                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
-
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
-                            )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
-                    } catch (e: Exception) {
-                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
-                    }
-                }
-
-                products.value = productList
-                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
-            }
-        })
-    }
-
-    Scaffold(
-        topBar = { TopBar(navController) },
-        bottomBar = { BottomBar(navController) }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.vector),
-                            contentDescription = "Arrow",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredWidth(10.dp)
-                                .requiredHeight(16.dp)
-                                .clickable {
-                                    navController.navigate("AndroidCompact46")
-                                }
-                        )
-                        Text(
-                            text = "NỮ - GIÀY - TẤT CẢ SẢN PHẨM",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontFamily = robotoMonoBold,
-                                color = Color.Black,
-                                fontSize = 16.sp
-                            )
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Interface essential/Filter",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredSize(size = 25.dp)
-                        )
-                    }
-                }
-                Box {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
-                            ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
-                                product = product,
-                                viewModel = viewModel,
-                                navController = navController
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun AndroidCompact57(navController: NavHostController) {
     val viewModel: ProductViewModel = viewModel()
     val products = remember { mutableStateOf(emptyList<Product>()) }
@@ -4735,24 +4104,31 @@ fun AndroidCompact57(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -4822,139 +4198,18 @@ fun AndroidCompact57(navController: NavHostController) {
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Dép/Dép xỏ ngón" && it.gender == "Nữ"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
-                                product = product,
-                                viewModel = viewModel,
-                                navController = navController
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun AndroidCompact56(navController: NavHostController) {
-    val viewModel: ProductViewModel = viewModel()
-    val products = remember { mutableStateOf(emptyList<Product>()) }
-
-    LaunchedEffect(Unit) {
-        val database = FirebaseDatabase.getInstance().getReference("products")
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val productList = mutableListOf<Product>()
-                for (child in snapshot.children) {
-                    try {
-                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
-                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
-
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
-                            )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
-                    } catch (e: Exception) {
-                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
-                    }
-                }
-
-                products.value = productList
-                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
-            }
-        })
-    }
-
-    Scaffold(
-        topBar = { TopBar(navController) },
-        bottomBar = { BottomBar(navController) }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.vector),
-                            contentDescription = "Arrow",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredWidth(10.dp)
-                                .requiredHeight(16.dp)
-                                .clickable {
-                                    navController.navigate("AndroidCompact46")
-                                }
-                        )
-                        Text(
-                            text = "NỮ - GIÀY - GIÀY SNEAKER",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontFamily = robotoMonoBold,
-                                color = Color.Black,
-                                fontSize = 16.sp
-                            )
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Interface essential/Filter",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredSize(size = 25.dp)
-                        )
-                    }
-                }
-                Box {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
-                            ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -4979,24 +4234,31 @@ fun AndroidCompact55(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -5051,32 +4313,21 @@ fun AndroidCompact55(navController: NavHostController) {
                             )
                         )
                     }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Interface essential/Filter",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredSize(size = 25.dp)
-                        )
-                    }
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Giày tập luyện" && it.gender == "Nữ"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -5101,24 +4352,31 @@ fun AndroidCompact54(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -5188,17 +4446,18 @@ fun AndroidCompact54(navController: NavHostController) {
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Giày chạy bộ" && it.gender == "Nữ"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -5223,24 +4482,31 @@ fun AndroidCompact53(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -5295,154 +4561,21 @@ fun AndroidCompact53(navController: NavHostController) {
                             )
                         )
                     }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Interface essential/Filter",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredSize(size = 25.dp)
-                        )
-                    }
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Giày originals" && it.gender == "Nữ"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
-                                product = product,
-                                viewModel = viewModel,
-                                navController = navController
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun AndroidCompact51(navController: NavHostController) {
-    val viewModel: ProductViewModel = viewModel()
-    val products = remember { mutableStateOf(emptyList<Product>()) }
-
-    LaunchedEffect(Unit) {
-        val database = FirebaseDatabase.getInstance().getReference("products")
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val productList = mutableListOf<Product>()
-                for (child in snapshot.children) {
-                    try {
-                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
-                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
-
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
-                            )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
-                    } catch (e: Exception) {
-                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
-                    }
-                }
-
-                products.value = productList
-                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
-            }
-        })
-    }
-
-    Scaffold(
-        topBar = { TopBar(navController) },
-        bottomBar = { BottomBar(navController) }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.vector),
-                            contentDescription = "Arrow",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredWidth(10.dp)
-                                .requiredHeight(16.dp)
-                                .clickable {
-                                    navController.navigate("AndroidCompact42")
-                                }
-                        )
-                        Text(
-                            text = "NỮ - ÁO - TẤT CẢ",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontFamily = robotoMonoBold,
-                                color = Color.Black,
-                                fontSize = 16.sp
-                            )
-                        )
-                    }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Interface essential/Filter",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredSize(size = 25.dp)
-                        )
-                    }
-                }
-                Box {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
-                            ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -5467,24 +4600,31 @@ fun AndroidCompact50(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -5539,32 +4679,21 @@ fun AndroidCompact50(navController: NavHostController) {
                             )
                         )
                     }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Interface essential/Filter",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredSize(size = 25.dp)
-                        )
-                    }
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Áo khoác" && it.gender == "Nữ"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -5589,24 +4718,31 @@ fun AndroidCompact48(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -5661,32 +4797,21 @@ fun AndroidCompact48(navController: NavHostController) {
                             )
                         )
                     }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Interface essential/Filter",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredSize(size = 25.dp)
-                        )
-                    }
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Áo thun/Áo hoodies" && it.gender == "Nữ"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -5711,24 +4836,31 @@ fun AndroidCompact49(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -5783,32 +4915,21 @@ fun AndroidCompact49(navController: NavHostController) {
                             )
                         )
                     }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Interface essential/Filter",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredSize(size = 25.dp)
-                        )
-                    }
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Áo tập/Áo croptop" && it.gender == "Nữ"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -5833,24 +4954,31 @@ fun AndroidCompact47(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -5905,32 +5033,21 @@ fun AndroidCompact47(navController: NavHostController) {
                             )
                         )
                     }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.filter),
-                            contentDescription = "Interface essential/Filter",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredSize(size = 25.dp)
-                        )
-                    }
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Áo phông/Áo sơ mi" && it.gender == "Nữ"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -5955,24 +5072,31 @@ fun AndroidCompact61(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -6030,17 +5154,18 @@ fun AndroidCompact61(navController: NavHostController) {
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Giày originals" && it.gender == "Nam"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -6065,24 +5190,31 @@ fun AndroidCompact62(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -6140,17 +5272,18 @@ fun AndroidCompact62(navController: NavHostController) {
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Giày chạy bộ" && it.gender == "Nam"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -6175,24 +5308,31 @@ fun AndroidCompact63(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -6250,127 +5390,18 @@ fun AndroidCompact63(navController: NavHostController) {
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Áo tập luyên/Giày đá bóng" && it.gender == "Nam"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
-                                product = product,
-                                viewModel = viewModel,
-                                navController = navController
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun AndroidCompact64(navController: NavHostController) {
-    val viewModel: ProductViewModel = viewModel()
-    val products = remember { mutableStateOf(emptyList<Product>()) }
-
-    LaunchedEffect(Unit) {
-        val database = FirebaseDatabase.getInstance().getReference("products")
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val productList = mutableListOf<Product>()
-                for (child in snapshot.children) {
-                    try {
-                        val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
-                        val tittle = child.child("tittle").getValue(String::class.java) ?: ""
-
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
-                            )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
-                    } catch (e: Exception) {
-                        Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
-                    }
-                }
-
-                products.value = productList
-                Log.d("FirebaseFetch", "Total products fetched: ${productList.size}")
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseFetch", "Failed to fetch data: ${error.message}")
-            }
-        })
-    }
-
-    Scaffold(
-        topBar = { TopBar(navController) },
-        bottomBar = { BottomBar(navController) }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.vector),
-                            contentDescription = "Arrow",
-                            colorFilter = ColorFilter.tint(Color.Black),
-                            modifier = Modifier
-                                .requiredWidth(10.dp)
-                                .requiredHeight(16.dp)
-                                .clickable {
-                                    navController.navigate("AndroidCompact71")
-                                }
-                        )
-                        Text(
-                            text = "NAM - GIÀY - GIÀY SNEAKER",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontFamily = robotoMonoBold,
-                                color = Color.Black,
-                                fontSize = 16.sp
-                            )
-                        )
-                    }
-                }
-                Box {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp)
-                    ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
-                            ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -6395,24 +5426,31 @@ fun AndroidCompact65(navController: NavHostController) {
                 val productList = mutableListOf<Product>()
                 for (child in snapshot.children) {
                     try {
+                        // Lấy dữ liệu từng sản phẩm từ Firebase
                         val priceValue = child.child("price").getValue(Long::class.java) ?: 0L
-                        val image = child.child("image").getValue(Int::class.java) ?: 0
+                        val imagePath = child.child("image").getValue(String::class.java) ?: ""
                         val tittle = child.child("tittle").getValue(String::class.java) ?: ""
+                        val description = child.child("description").getValue(String::class.java) ?: ""
+                        val status = child.child("status").getValue(String::class.java) ?: ""
+                        val category = child.child("category").getValue(String::class.java) ?: ""
+                        val gender = child.child("gender").getValue(String::class.java) ?: ""
 
-                        // Ánh xạ image từ số sang drawable
-                        val drawableResId = imageMap[image]
-                        if (drawableResId != null) {
-                            productList.add(
-                                Product(
-                                    image = drawableResId,
-                                    price = priceValue,
-                                    tittle = tittle
-                                )
+                        // Tạo URL đầy đủ cho hình ảnh
+                        val fullImageUrl = "http://localhost:5255$imagePath"
+
+                        // Thêm sản phẩm vào danh sách
+                        productList.add(
+                            Product(
+                                id = child.key ?: "",
+                                image = fullImageUrl,
+                                price = priceValue,
+                                tittle = tittle,
+                                description = description,
+                                status = status,
+                                category = category,
+                                gender = gender
                             )
-                            Log.d("FirebaseFetch", "Added product: tittle=$tittle, Price=$priceValue")
-                        } else {
-                            Log.d("FirebaseFetch", "Drawable not found for image: $image")
-                        }
+                        )
                     } catch (e: Exception) {
                         Log.e("FirebaseFetch", "Error parsing product: ${e.message}")
                     }
@@ -6470,17 +5508,18 @@ fun AndroidCompact65(navController: NavHostController) {
                 }
                 Box {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
+                        columns = GridCells.Fixed(2), // Hiển thị 2 cột
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
+                            .padding(16.dp),
+                        contentPadding = PaddingValues(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        items(products.value.size) { index ->
-                            val product = products.value[index]
+                        items(viewModel.products.filter {
+                            it.category == "Dép/Dép xỏ ngón" && it.gender == "Nam"
+                        }) { product ->
                             ProductCard(
-                                imageResId = product.image,
-                                price = product.price,
-                                tittle = product.tittle,
                                 product = product,
                                 viewModel = viewModel,
                                 navController = navController
@@ -6498,13 +5537,6 @@ fun AndroidCompact65(navController: NavHostController) {
 private fun AndroidCompact65Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact65(navController = previewNavController)
-}
-
-@Preview(widthDp = 412, heightDp = 1283)
-@Composable
-private fun AndroidCompact64Preview() {
-    val previewNavController = rememberNavController()
-    AndroidCompact64(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 1283)
@@ -6558,13 +5590,6 @@ private fun AndroidCompact50Preview() {
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
-private fun AndroidCompact51Preview() {
-    val previewNavController = rememberNavController()
-    AndroidCompact51(navController = previewNavController)
-}
-
-@Preview(widthDp = 412, heightDp = 1283)
-@Composable
 private fun AndroidCompact53Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact53(navController = previewNavController)
@@ -6586,23 +5611,9 @@ private fun AndroidCompact55Preview() {
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
-private fun AndroidCompact56Preview() {
-    val previewNavController = rememberNavController()
-    AndroidCompact56(navController = previewNavController)
-}
-
-@Preview(widthDp = 412, heightDp = 1283)
-@Composable
 private fun AndroidCompact57Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact57(navController = previewNavController)
-}
-
-@Preview(widthDp = 412, heightDp = 1283)
-@Composable
-private fun AndroidCompact58Preview() {
-    val previewNavController = rememberNavController()
-    AndroidCompact58(navController = previewNavController)
 }
 
 @Preview(widthDp = 412, heightDp = 917)
@@ -6737,13 +5748,6 @@ private fun AndroidCompact24Preview() {
 
 @Preview(widthDp = 412, heightDp = 1283)
 @Composable
-private fun AndroidCompact40Preview() {
-    val previewNavController = rememberNavController()
-    AndroidCompact40(navController = previewNavController)
-}
-
-@Preview(widthDp = 412, heightDp = 1283)
-@Composable
 private fun AndroidCompact59Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact59(navController = previewNavController)
@@ -6796,18 +5800,4 @@ private fun AndroidCompact68Preview() {
 private fun AndroidCompact69Preview() {
     val previewNavController = rememberNavController()
     AndroidCompact69(navController = previewNavController)
-}
-
-@Preview(widthDp = 412, heightDp = 1283)
-@Composable
-private fun AndroidCompact70Preview() {
-    val previewNavController = rememberNavController()
-    AndroidCompact70(navController = previewNavController)
-}
-
-@Preview(widthDp = 412, heightDp = 1283)
-@Composable
-private fun AndroidCompact94Preview() {
-    val previewNavController = rememberNavController()
-    AndroidCompact94(navController = previewNavController)
 }
